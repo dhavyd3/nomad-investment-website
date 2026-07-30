@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nomad Investments Limited
 
-## Getting Started
+Marketing site for Nomad Investments Limited — a Ugandan consulting company operating
+across ICT and cybersecurity, engineering and infrastructure, agriculture, energy,
+environment, labour and business consulting. Founded 2016, Kampala.
 
-First, run the development server:
+## Stack
+
+- **Next.js 15** (App Router) + React 19, TypeScript
+- **Tailwind CSS v4** with design tokens in `src/app/globals.css`
+- **GSAP / ScrollTrigger** for scroll-driven reveals
+- **Lenis** for smooth scrolling (exposed on `window.__lenis` so nav jumps route through it
+  rather than fighting its rAF loop)
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site runs at http://localhost:3000. `npm run build` produces the production build.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Path | What it is |
+| --- | --- |
+| `src/app/layout.tsx` | Fonts, metadata, and the persistent `SmoothScroll` + `Nav` |
+| `src/app/page.tsx` | Section order for the single-page site |
+| `src/app/globals.css` | Design tokens, type scale, nav and button styles |
+| `src/components/` | One file per section, plus `Nav` and `Preloader` |
+| `public/media/` | Video and image assets referenced by `/media/...` paths |
 
-## Learn More
+Sections are separated by `<Transition>`, which blends one section's background into the
+next. Sections flag their background brightness with `data-nav-theme="light"`; the nav
+samples what is painted beneath it and recolours itself to match.
 
-To learn more about Next.js, take a look at the following resources:
+`ServiceScroll` is 620vh of pinned scroll-scrubbed video — its five chapters are scroll
+offsets rather than anchors, which is why the nav dropdown converts a chapter's progress
+back into a scroll position instead of using an `href`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploying
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploys to Vercel as a standard Next.js app — no environment variables required. Import
+the repository and accept the detected framework preset.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Note that `next.config.ts` pins `outputFileTracingRoot` to this directory, since the parent
+folder carries its own lockfile for unrelated tooling.

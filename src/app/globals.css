@@ -1,26 +1,317 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Design tokens
+   Typography measured off on.energy (Univers Next Pro 300,
+   -0.04em tracking). Inter 300 is the free stand-in.
+   Colours sampled off nomadinvestments.co.ug.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #060644;
+  --navy-deep: #04042e;
+  --gold: #ffde59;
+
+  /* the title / explanation colour split the brief called out */
+  --title-dark-bg: #eeeeee;
+  --title-light-bg: #202020;
+  --body: #7d7d7d;
+  --mono: #afafaf;
+
+  --ink: #050510;
+  --paper: #f4f4f2;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.24, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-navy: var(--navy);
+  --color-gold: var(--gold);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--ink);
+  color: var(--title-dark-bg);
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+/* ---------- type scale: weight 300 + tight tracking is the whole trick ---------- */
+.t-h1 {
+  font-weight: 300;
+  font-size: clamp(2.6rem, 6.6vw, 6.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+.t-h2 {
+  font-weight: 300;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+.t-h3 {
+  font-weight: 300;
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+.t-lead {
+  font-weight: 300;
+  font-size: clamp(1.05rem, 1.6vw, 1.5rem);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: var(--body);
+}
+.t-body {
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.375;
+  color: var(--body);
+}
+.t-mono {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mono);
+}
+.on-light .t-h1, .on-light .t-h2, .on-light .t-h3 { color: var(--title-light-bg); }
+.on-light .t-mono { color: #6b6b6b; }
+
+/* ---------- layout ---------- */
+.wrap { width: 100%; max-width: 1360px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 64px); }
+section { position: relative; }
+
+/* ---------- nav: terminal-industries blur pill ---------- */
+.nav-pill {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.45s var(--ease), border-color 0.45s var(--ease);
+}
+
+/* adapts to whatever it is sitting over — sections opt in with data-nav-theme="light" */
+.nav-root[data-light] .nav-pill {
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(6, 6, 68, 0.1);
+}
+.nav-root { --nav-fg: #fff; --nav-accent: var(--gold); }
+.nav-root[data-light] { --nav-fg: var(--navy); --nav-accent: var(--navy); }
+.nav-root a,
+.nav-root .nav-link,
+.nav-root button { color: var(--nav-fg); }
+.nav-root[data-light] .nav-link { color: color-mix(in srgb, var(--navy) 72%, transparent); }
+/* the gold button keeps navy text in both themes — --nav-fg must not reach it */
+.nav-root .btn-gold,
+.nav-root[data-light] .btn-gold { color: var(--navy); }
+.nav-root .btn-gold:hover { color: var(--navy); }
+.nav-link {
+  font-size: 0.875rem;      /* 14px, measured */
+  font-weight: 450;
+  letter-spacing: 0.03em;   /* 0.42px, measured */
+  text-decoration: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* symmetric padding keeps the label optically centred while leaving room for the dot */
+  padding: 1em 0;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.3s var(--ease);
+}
+.nav-link-label { display: block; line-height: 1.3em; }
+
+/* terminal's hover tell: the label recolours and a square pip blooms under it. Theirs is
+   lime; ours is gold on dark and navy over the light sections. */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.21875rem;
+  width: 0.3125rem;
+  height: 0.3125rem;
+  background: var(--nav-accent);
+  opacity: 0;
+  transform: translateX(-50%) scale(0);
+  transform-origin: center center;
+  transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1),
+              opacity 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+  will-change: transform;
+}
+.nav-root .nav-link:hover,
+.nav-root .nav-link:focus-visible,
+.nav-root .nav-link[data-open="true"] { color: var(--nav-accent); }
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link[data-open="true"]::after { opacity: 1; transform: translateX(-50%) scale(1.01); }
+
+.nav-caret {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  transition: transform 0.3s var(--ease);
+}
+.nav-link[data-open="true"] .nav-caret { transform: rotate(180deg); }
+
+/* ---------- nav dropdown ---------- */
+.nav-menu {
+  position: absolute;
+  top: calc(100% - 0.75rem);
+  left: 50%;
+  min-width: 280px;
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+  transform: translateX(-50%);
+  transform-origin: center top;
+  /* terminal wipes theirs open from the top edge rather than fading it */
+  animation: navMenuIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes navMenuIn {
+  from { clip-path: inset(0 0 100%); opacity: 0; }
+  to   { clip-path: inset(0); opacity: 1; }
+}
+.nav-root .nav-menu-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.75rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  color: color-mix(in srgb, var(--nav-fg) 76%, transparent);
+  transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
+}
+.nav-root .nav-menu-item:hover,
+.nav-root .nav-menu-item:focus-visible {
+  background: color-mix(in srgb, var(--nav-accent) 14%, transparent);
+  color: var(--nav-accent);
+}
+.nav-menu-item .tick {
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.nav-menu-item:hover .tick,
+.nav-menu-item:focus-visible .tick { opacity: 1; transform: none; }
+
+/* ---------- buttons: terminal motion, nomad colour ---------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: var(--font-geist-mono), monospace;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.35s var(--ease);
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateY(101%);
+  transition: transform 0.45s var(--ease);
+}
+.btn:hover::after { transform: translateY(0); }
+.btn-gold { background: var(--gold); color: var(--navy); }
+.btn-gold::after { background: #fff; }
+.btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+.btn-ghost::after { background: var(--gold); }
+.btn-ghost:hover { color: var(--navy); }
+.btn .arrow { transition: transform 0.4s var(--ease); }
+.btn:hover .arrow { transform: translateX(4px); }
+
+/* ---------- reveal ---------- */
+.rise { opacity: 0; transform: translateY(24px); }
+.rise.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+
+/* word-by-word reveal, as terminal does in the pinned section */
+.word { display: inline-block; color: color-mix(in srgb, var(--body) 45%, transparent); transition: color 0.5s var(--ease); }
+.word.lit { color: var(--body); }
+
+/* ---------- scroll HUD (brief images 7 + 8 — "those things should be visible") ---------- */
+.hud {
+  position: absolute;
+  left: clamp(20px, 5vw, 64px);
+  right: clamp(20px, 5vw, 64px);
+  bottom: 28px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+.hud-track { flex: 1; height: 2px; background: rgba(255, 255, 255, 0.16); position: relative; display: flex; }
+.hud-track i { position: absolute; inset: 0 auto 0 0; background: var(--gold); width: 0; }
+.hud-track b { flex: 1; border-right: 1px solid rgba(255, 255, 255, 0.34); }
+.hud-track b:last-child { border-right: 0; }
+
+/* ---------- section transitions: never a straight line ---------- */
+/* diagonal cut — brief image 1 (vista) */
+.cut-top { clip-path: polygon(0 4vw, 100% 0, 100% 100%, 0 100%); }
+.cut-bottom { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4vw), 0 100%); }
+
+/* light-streak wipe — brief image 3 (on.energy) */
+.streak {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 60vh;
+  pointer-events: none;
+  background: radial-gradient(60% 120% at 20% 40%, rgba(255, 222, 89, 0.22), transparent 62%);
+  filter: blur(28px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { opacity: 1; transform: none; }
+  .word { color: var(--body); }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
