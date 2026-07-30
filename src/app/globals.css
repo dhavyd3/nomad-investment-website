@@ -167,6 +167,39 @@ section { position: relative; }
   transition: background 0.45s var(--ease), border-color 0.45s var(--ease);
 }
 
+/* Bordered chips in the bar (language selector, burger). Both the label and the border
+   have to track --nav-fg, which turns navy over the light sections — a hardcoded
+   text-white/border-white here goes invisible there. No colour utility on the element,
+   so `border` resolves to currentColor and this only tunes the alpha. */
+.nav-root .nav-chip {
+  border-color: color-mix(in srgb, currentColor 26%, transparent);
+  transition: border-color 0.3s var(--ease);
+}
+.nav-root .nav-chip:hover,
+.nav-root .nav-chip:focus-visible {
+  border-color: color-mix(in srgb, currentColor 52%, transparent);
+}
+
+/* Language options. Same reasoning as .nav-chip: colour comes from --nav-fg, and the
+   selected state uses --nav-accent (gold on dark, navy on light) rather than raw gold,
+   which would sit at ~1.5:1 on the light pill. */
+.nav-root .nav-opt {
+  /* var(--nav-fg), not `inherit`: the <ul> ancestor is not an a/button so it never
+     picks up --nav-fg, and inheriting walked all the way up to the body's #eeeeee */
+  color: var(--nav-fg);
+  opacity: 0.78;
+  transition: background-color 0.25s var(--ease), opacity 0.25s var(--ease);
+}
+.nav-root .nav-opt:hover,
+.nav-root .nav-opt:focus-visible {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  opacity: 1;
+}
+.nav-root .nav-opt[data-current="true"] {
+  color: var(--nav-accent);
+  opacity: 1;
+}
+
 /* The open mobile sheet sits over the hero reel. 30% black plus a blur is nowhere near
    enough to read eleven menu labels against moving video, so the sheet gets its own
    near-solid ground — and keeps it over the light sections too, because everything

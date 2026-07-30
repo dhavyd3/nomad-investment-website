@@ -148,7 +148,9 @@ export default function Nav() {
     >
       <div className="nav-pill mx-auto flex h-[72px] max-w-[1240px] items-center gap-6 px-4 sm:px-6">
         {/* logo + wordmark */}
-        <a href="#top" className="flex shrink-0 items-center gap-3 text-white no-underline">
+        {/* no text-white here: .nav-root a supplies --nav-fg, which turns navy over the
+            light sections. Hardcoding white left the wordmark at 1.04:1 on them. */}
+        <a href="#top" className="flex shrink-0 items-center gap-3 no-underline">
           <span
             className="grid h-9 w-9 place-items-center rounded-full border-2 text-[7px] tracking-[0.08em]"
             style={{ borderColor: "var(--gold)", fontFamily: "var(--font-geist-mono)" }}
@@ -232,7 +234,7 @@ export default function Nav() {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label="Select language"
-            className="flex items-center gap-1.5 rounded-md border border-white/20 px-3 py-1.5 text-[12px] tracking-[0.08em] text-white transition-colors hover:border-white/45"
+            className="nav-chip flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[12px] tracking-[0.08em]"
             style={{ fontFamily: "var(--font-geist-mono)" }}
           >
             {lang}
@@ -250,9 +252,8 @@ export default function Nav() {
                 <li key={c}>
                   <button
                     onClick={() => { setLang(c); setOpen(false); }}
-                    className={`block w-full rounded px-3 py-2 text-left text-[12px] tracking-[0.08em] transition-colors hover:bg-white/10 ${
-                      c === lang ? "text-[var(--gold)]" : "text-white/75"
-                    }`}
+                    data-current={c === lang ? "true" : undefined}
+                    className="nav-opt block w-full rounded px-3 py-2 text-left text-[12px] tracking-[0.08em]"
                     style={{ fontFamily: "var(--font-geist-mono)" }}
                   >
                     {c}
@@ -272,8 +273,7 @@ export default function Nav() {
           onClick={() => setMenu((v) => !v)}
           aria-expanded={menu}
           aria-label="Menu"
-          className="ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
-          style={{ borderColor: "color-mix(in srgb, currentColor 30%, transparent)" }}
+          className="nav-chip ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
         >
           <span className="relative block h-[10px] w-[18px]">
             {[0, 4, 8].map((t, i) => (
