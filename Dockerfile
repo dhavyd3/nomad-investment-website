@@ -9,8 +9,13 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Drop dev dependencies once the build is done — `next start` only needs prod deps.
-RUN npm prune --omit=dev
+# `next start` only needs prod deps — except TypeScript, because the app's config is
+# next.config.ts and Next parses it again at boot. Without it Next tries to install
+# TypeScript into /app at runtime, which fails on the read-only non-root user and
+# silently drops the whole config.
+RUN npm prune --omit=dev \
+ && npm install --no-save --no-audit --no-fund typescript \
+ && rm -rf .next/cache
 
 # ---- Runtime stage ----
 FROM node:20-alpine AS runner
@@ -28,11 +33,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
 
 USER nextjs
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://127.0.0.1:3000', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
 
 CMD ["node_modules/.bin/next", "start"]

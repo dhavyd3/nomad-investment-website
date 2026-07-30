@@ -44,6 +44,19 @@ body {
   overflow-x: clip;
 }
 
+/* Everything below is a component class, and it MUST sit in the components layer.
+   Unlayered CSS outranks anything Tailwind puts in its own layers, so out here
+   `.btn { display: inline-flex }` beat `hidden`/`lg:inline-flex` (the desktop CTA
+   rendered on top of the burger) and `.wrap { padding: 0 ... }` beat every `pt-*`
+   and `py-*` applied to a `.wrap` element. Inside the layer, utilities win. */
+@layer components {
+
+/* Full-viewport stage for the sticky/pinned panels. 100vh on iOS is the *largest*
+   viewport, so the bottom of a pinned panel hides behind the browser toolbar; dvh
+   tracks the real one. None of these panels use ScrollTrigger's `pin`, so a
+   changing dvh cannot desynchronise pin spacing. */
+.stage { height: 100vh; height: 100dvh; }
+
 /* ---------- type scale: weight 300 + tight tracking is the whole trick ---------- */
 .t-h1 {
   font-weight: 300;
@@ -91,6 +104,59 @@ body {
 .wrap { width: 100%; max-width: 1360px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 64px); }
 section { position: relative; }
 
+/* ---------- hero ---------- */
+/* The staircase indent on the three hero words. A phone has no width to spare, so it
+   only kicks in once there is room for it. */
+.hero-line { padding-left: 0; }
+@media (min-width: 640px) {
+  .hero-line { padding-left: calc(var(--i) * 4vw); }
+}
+
+.hero-scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(6, 6, 68, 0.52) 0%,
+    rgba(6, 6, 68, 0.42) 45%,
+    rgba(6, 6, 68, 0.72) 100%
+  );
+}
+@media (min-width: 768px) {
+  .hero-scrim {
+    background: linear-gradient(
+      100deg,
+      rgba(6, 6, 68, 0.62) 0%,
+      rgba(6, 6, 68, 0.3) 40%,
+      transparent 72%
+    );
+  }
+}
+
+/* ---------- pinned showcase ----------
+   The pinned layout needs a square image panel plus a ~290px copy column inside one
+   viewport height. A landscape phone has ~390px of it, so the copy gets cut off. Width
+   alone is the wrong test — it has to be tall enough too, and below that it falls back
+   to the plain stack. */
+.pin-section { height: auto; }
+.pin-stack { display: block; }
+.pin-panel { display: none; }
+@media (min-width: 768px) and (min-height: 640px) {
+  .pin-section { height: var(--pin-h); }
+  .pin-stack { display: none; }
+  .pin-panel { display: flex; }
+}
+
+/* ---------- short viewports (landscape phones, small tablets) ----------
+   The pinned panels centre their copy inside one viewport height. In landscape a phone
+   has ~350px of it, and the desktop type scale simply does not fit — it gets clipped by
+   the panel's overflow. Trim the scale rather than let the copy disappear. */
+@media (max-height: 620px) and (min-width: 480px) {
+  .t-h1 { font-size: clamp(2rem, 7vh, 3.4rem); }
+  .t-h2 { font-size: clamp(1.5rem, 5.4vh, 2.25rem); }
+  .t-h3 { font-size: clamp(1.25rem, 4.4vh, 1.75rem); }
+  .t-lead { font-size: 1rem; }
+  .t-body { font-size: 0.9375rem; }
+}
+
 /* ---------- nav: terminal-industries blur pill ---------- */
 .nav-pill {
   background: rgba(0, 0, 0, 0.3);
@@ -100,6 +166,19 @@ section { position: relative; }
   border: 1px solid rgba(255, 255, 255, 0.07);
   transition: background 0.45s var(--ease), border-color 0.45s var(--ease);
 }
+
+/* The open mobile sheet sits over the hero reel. 30% black plus a blur is nowhere near
+   enough to read eleven menu labels against moving video, so the sheet gets its own
+   near-solid ground — and keeps it over the light sections too, because everything
+   inside it is styled white. */
+.nav-root .nav-sheet,
+.nav-root[data-light] .nav-sheet {
+  background: rgba(5, 5, 46, 0.985);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.nav-root[data-light] .nav-sheet a,
+.nav-root[data-light] .nav-sheet button { color: #fff; }
+.nav-root[data-light] .nav-sheet .btn-gold { color: var(--navy); }
 
 /* adapts to whatever it is sitting over — sections opt in with data-nav-theme="light" */
 .nav-root[data-light] .nav-pill {
@@ -308,6 +387,19 @@ section { position: relative; }
   pointer-events: none;
   background: radial-gradient(60% 120% at 20% 40%, rgba(255, 222, 89, 0.22), transparent 62%);
   filter: blur(28px);
+}
+
+} /* end @layer components */
+
+/* ---------- touch ----------
+   iOS latches :hover onto the last-tapped element, so a hover-only reveal stays stuck on
+   after the tap. Devices without a real pointer get the resting state instead. */
+@media (hover: none) {
+  .btn:hover::after { transform: translateY(101%); }
+  .btn-ghost:hover { color: #fff; }
+  .btn:hover .arrow { transform: none; }
+  .nav-link:hover::after { opacity: 0; transform: translateX(-50%) scale(0); }
+  .nav-root .nav-link:hover { color: var(--nav-fg); }
 }
 
 @media (prefers-reduced-motion: reduce) {

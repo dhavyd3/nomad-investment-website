@@ -62,8 +62,10 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={root} id="top" data-nav-theme="dark" className="relative h-[260vh]">
-      <div ref={stage} className="sticky top-0 h-screen overflow-hidden">
+    /* 260vh of scrub is a long way to travel with a thumb — phones get a shorter run at
+       the same choreography. */
+    <section ref={root} id="top" data-nav-theme="dark" className="relative h-[190vh] md:h-[260vh]">
+      <div ref={stage} className="stage sticky top-0 overflow-hidden">
         <div
           ref={frame}
           className="absolute inset-0 overflow-hidden will-change-transform"
@@ -81,14 +83,10 @@ export default function Hero() {
             preload="auto"
             aria-hidden="true"
           />
-          {/* left-weighted scrim: the reel is not uniformly mid-tone, so white type needs help */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(100deg, rgba(6,6,68,.62) 0%, rgba(6,6,68,.3) 40%, transparent 72%)",
-            }}
-          />
+          {/* Scrim: the reel is not uniformly mid-tone, so white type needs help. Weighted
+              left on desktop where the type sits in the left half; on a phone the type runs
+              the full width, so it needs an even vertical wash instead. */}
+          <div className="hero-scrim absolute inset-0" />
         </div>
 
         <div className="wrap pointer-events-none absolute inset-0 flex flex-col justify-center">
@@ -97,15 +95,17 @@ export default function Hero() {
               <span key={w} className="block overflow-hidden">
                 <span
                   ref={(el) => { words.current[i] = el; }}
-                  className="block will-change-transform"
-                  style={{ color: i === 2 ? "var(--gold)" : "#fff", paddingLeft: `${i * 4}vw` }}
+                  /* the staircase indent is dropped on narrow screens — see .hero-line;
+                     8vw of it would push "Globalize." off a phone */
+                  className="hero-line block will-change-transform"
+                  style={{ color: i === 2 ? "var(--gold)" : "#fff", "--i": i } as React.CSSProperties}
                 >
                   {w}
                 </span>
               </span>
             ))}
           </h1>
-          <p ref={lead} className="t-lead mt-7 max-w-[46ch]" style={{ color: "rgba(255,255,255,.72)" }}>
+          <p ref={lead} className="t-lead mt-5 max-w-[46ch] sm:mt-7" style={{ color: "rgba(255,255,255,.72)" }}>
             A premier Ugandan consulting company. Seven disciplines, one operating standard.
           </p>
         </div>

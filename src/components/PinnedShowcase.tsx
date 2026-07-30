@@ -92,7 +92,9 @@ export default function PinnedShowcase() {
     <section
       ref={root}
       data-nav-theme="light"
-      className="relative md:h-[var(--pin-h)]"
+      /* height has to track the same condition as the layout, or a short viewport gets
+         3 viewports of scroll for a stack that no longer fills it */
+      className="pin-section relative"
       style={
         {
           "--pin-h": `${ITEMS.length * 100}vh`,
@@ -102,7 +104,7 @@ export default function PinnedShowcase() {
     >
       {/* Phones get a plain stack. Pinning three items into one viewport there crops the
           panel and pushes the index label up behind the nav, so the pin is desktop-only. */}
-      <div className="on-light wrap py-[clamp(64px,11vh,110px)] md:hidden">
+      <div className="on-light wrap pin-stack py-[clamp(64px,11vh,110px)]">
         {ITEMS.map((it, i) => (
           <div
             key={it.n}
@@ -129,7 +131,7 @@ export default function PinnedShowcase() {
         ))}
       </div>
 
-      <div className="on-light sticky top-0 hidden h-screen items-center overflow-hidden md:flex">
+      <div className="on-light stage pin-panel sticky top-0 items-center overflow-hidden">
         <div className="wrap grid w-full items-center gap-10 md:grid-cols-[1fr_minmax(320px,46%)]">
           {/* ---------- left: swapping text ---------- */}
           <div className="relative flex gap-6">

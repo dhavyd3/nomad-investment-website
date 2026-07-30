@@ -121,8 +121,11 @@ export default function ServiceScroll() {
   const ch = CHAPTERS[idx];
 
   return (
-    <section id="services" ref={root} data-nav-theme="dark" className="relative h-[620vh]">
-      <div className="sticky top-0 h-screen overflow-hidden bg-black">
+    /* 620vh is six-and-a-bit screens of thumb travel; phones get a shorter run through the
+       same five chapters (the thresholds are fractions of the section, so they still land
+       on the right frames). */
+    <section id="services" ref={root} data-nav-theme="dark" className="relative h-[400vh] md:h-[620vh]">
+      <div className="stage sticky top-0 overflow-hidden bg-black">
         <video
           ref={video}
           className="absolute inset-0 h-full w-full object-cover"
@@ -135,12 +138,14 @@ export default function ServiceScroll() {
         />
         <div className="svc-scrim absolute inset-0" />
 
-        <div className="wrap absolute inset-0 flex flex-col justify-center">
+        {/* the top pad clears the fixed nav pill, which otherwise sits over the title on a
+            phone once the copy is centred in a short viewport */}
+        <div className="wrap absolute inset-0 flex flex-col justify-center pb-10 pt-[104px] md:py-0">
           <div key={idx} className="service-copy max-w-full md:max-w-[min(560px,48vw)]">
             <h2 className="t-h2 whitespace-pre-line" style={{ color: "#fff" }}>
               {ch.title}
             </h2>
-            <p className="t-body mt-5" style={{ color: "rgba(255,255,255,.74)" }}>
+            <p className="t-body mt-4 sm:mt-5" style={{ color: "rgba(255,255,255,.74)" }}>
               {ch.body}
             </p>
           </div>

@@ -79,6 +79,37 @@ export default function Nav() {
 
   useEffect(() => () => window.clearTimeout(leave.current), []);
 
+  /* Hold the page still behind the open sheet. Lenis drives the real window scroll, so
+     `overflow: hidden` on its own does not stop it — it has to be told to stop too. */
+  useEffect(() => {
+    if (!menu) return;
+    const lenis = window.__lenis;
+    lenis?.stop();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+      lenis?.start();
+    };
+  }, [menu]);
+
+  /* Close the sheet if the viewport grows into the desktop layout while it is open,
+     otherwise it stays mounted underneath the full nav. */
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const close = () => { if (mq.matches) setMenu(false); };
+    mq.addEventListener("change", close);
+    return () => mq.removeEventListener("change", close);
+  }, []);
+
+  /* Native anchor jumps fight Lenis' rAF loop, so route them through it like the
+     desktop links already do. */
+  const goToAnchor = (href: string) => {
+    setMenu(false);
+    const el = document.querySelector(href) as HTMLElement | null;
+    if (el) window.setTimeout(() => scrollTo(el.offsetTop), 0);
+  };
+
   /* a short grace period on the way out, otherwise the gap between the trigger and the
      panel closes the menu while the pointer is still travelling to it */
   const hold = () => { window.clearTimeout(leave.current); setServices(true); };
@@ -183,7 +214,12 @@ export default function Nav() {
                 )}
               </div>
             ) : (
-              <a key={l.href} className="nav-link" href={l.href}>
+              <a
+                key={l.href}
+                className="nav-link"
+                href={l.href}
+                onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
+              >
                 <Label label={l.label} />
               </a>
             )
@@ -236,13 +272,16 @@ export default function Nav() {
           onClick={() => setMenu((v) => !v)}
           aria-expanded={menu}
           aria-label="Menu"
-          className="ml-auto grid h-10 w-10 place-items-center rounded-md border border-white/25 lg:hidden"
+          className="ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
+          style={{ borderColor: "color-mix(in srgb, currentColor 30%, transparent)" }}
         >
           <span className="relative block h-[10px] w-[18px]">
             {[0, 4, 8].map((t, i) => (
               <span
                 key={t}
-                className="absolute left-0 h-[1.5px] w-full bg-white transition-transform duration-300"
+                /* bg-current, not bg-white: --nav-fg turns navy over the light sections and
+                   a white burger vanished against them */
+                className="absolute left-0 h-[1.5px] w-full bg-current transition-transform duration-300"
                 style={{
                   top: t,
                   transform: menu
@@ -260,13 +299,16 @@ export default function Nav() {
       </div>
 
       {menu && (
-        <div className="nav-pill mx-auto mt-2 max-w-[1240px] p-3 lg:hidden">
+        /* Eleven rows plus the CTA is taller than a landscape phone, and the panel is
+           inside a fixed header — without its own scroller the bottom of the menu is
+           simply unreachable. Cap it to what is left below the pill and let it scroll. */
+        <div className="nav-pill nav-sheet mx-auto mt-2 max-h-[calc(100dvh-104px)] max-w-[1240px] overflow-y-auto overscroll-contain p-3 lg:hidden">
           {LINKS.map((l) => (
             <div key={l.href} className="border-b border-white/10 last:border-0">
               <a
                 href={l.href}
-                onClick={() => setMenu(false)}
-                className="block py-3 text-[15px] text-white no-underline"
+                onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
+                className="block py-3.5 text-[15px] text-white no-underline"
               >
                 {l.label}
               </a>
@@ -276,7 +318,7 @@ export default function Nav() {
                     <button
                       key={s.label}
                       onClick={() => { setMenu(false); goToService(s.at); }}
-                      className="py-2 text-left text-[13px] text-white/70"
+                      className="py-2.5 text-left text-[13.5px] leading-snug text-white/70"
                     >
                       {s.label}
                     </button>
@@ -285,12 +327,13 @@ export default function Nav() {
               )}
             </div>
           ))}
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-3 flex items-center gap-1">
             {LANGS.map((c) => (
               <button
                 key={c}
                 onClick={() => setLang(c)}
-                className={`rounded px-2.5 py-1.5 text-[12px] tracking-[0.08em] ${
+                aria-pressed={c === lang}
+                className={`rounded px-3 py-2 text-[12px] tracking-[0.08em] ${
                   c === lang ? "text-[var(--gold)]" : "text-white/60"
                 }`}
                 style={{ fontFamily: "var(--font-geist-mono)" }}
@@ -299,7 +342,11 @@ export default function Nav() {
               </button>
             ))}
           </div>
-          <a href="#contact" onClick={() => setMenu(false)} className="btn btn-gold mt-3 w-full justify-center">
+          <a
+            href="#contact"
+            onClick={(e) => { e.preventDefault(); goToAnchor("#contact"); }}
+            className="btn btn-gold mt-3 w-full justify-center"
+          >
             Get in touch <span className="arrow">→</span>
           </a>
         </div>

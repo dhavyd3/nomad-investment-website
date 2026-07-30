@@ -93,10 +93,12 @@ export default function WhyChooseUs() {
           {CARDS.map((c) => (
             <div
               key={c.label}
-              className="stat-card rounded-[18px] border border-white/8 p-7"
+              className="stat-card rounded-[18px] border border-white/8 p-6 sm:p-7"
               style={{ background: "rgba(255,255,255,.035)" }}
             >
-              <div className="flex items-start justify-end gap-1">
+              {/* right-aligned reads well in a narrow desktop column; stacked full-width on a
+                  phone it just orphans the number, so it sits with the copy instead */}
+              <div className="flex items-start justify-start gap-1 md:justify-end">
                 <span
                   className="leading-[0.85]"
                   style={{ fontSize: "clamp(3.4rem,6vw,5.4rem)", fontWeight: 300, letterSpacing: "-0.04em", color: "rgba(255,255,255,.9)" }}

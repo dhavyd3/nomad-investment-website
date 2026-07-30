@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -25,6 +25,14 @@ export const metadata: Metadata = {
   title: "Nomad Investments Limited — Strategize. Organize. Globalize.",
   description:
     "A Ugandan consulting company operating across ICT and cybersecurity, engineering and infrastructure, agriculture, energy, environment, labour and business consulting. Founded 2016, Kampala.",
+};
+
+/* Pinning the scale would block zoom, so only the width is fixed. `themeColor` paints
+   the phone's own chrome navy instead of leaving a white bar above the navy hero. */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#060644",
 };
 
 export default function RootLayout({
