@@ -133,16 +133,10 @@ export default function ServiceScroll() {
           preload="auto"
           aria-hidden="true"
         />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(100deg, rgba(6,6,68,.66) 0%, rgba(6,6,68,.34) 42%, transparent 72%)",
-          }}
-        />
+        <div className="svc-scrim absolute inset-0" />
 
         <div className="wrap absolute inset-0 flex flex-col justify-center">
-          <div key={idx} className="max-w-[min(560px,48vw)] service-copy">
+          <div key={idx} className="service-copy max-w-full md:max-w-[min(560px,48vw)]">
             <h2 className="t-h2 whitespace-pre-line" style={{ color: "#fff" }}>
               {ch.title}
             </h2>
@@ -154,6 +148,26 @@ export default function ServiceScroll() {
       </div>
 
       <style jsx>{`
+        /* the reel is left-weighted on desktop, where the copy sits in the left half. On a
+           phone the copy runs full width, so it needs an even scrim instead. */
+        .svc-scrim {
+          background: linear-gradient(
+            100deg,
+            rgba(6, 6, 68, 0.66) 0%,
+            rgba(6, 6, 68, 0.34) 42%,
+            transparent 72%
+          );
+        }
+        @media (max-width: 767px) {
+          .svc-scrim {
+            background: linear-gradient(
+              180deg,
+              rgba(6, 6, 68, 0.5) 0%,
+              rgba(6, 6, 68, 0.68) 45%,
+              rgba(6, 6, 68, 0.82) 100%
+            );
+          }
+        }
         .service-copy {
           animation: copyIn 0.75s var(--ease) both;
         }

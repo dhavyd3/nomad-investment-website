@@ -33,6 +33,30 @@ const ITEMS = [
   },
 ];
 
+/** Shared by the mobile stack and the desktop pinned column. */
+function Copy({ it }: { it: (typeof ITEMS)[number] }) {
+  return (
+    <>
+      <span className="t-mono block" style={{ color: "#6b6b6b" }}>
+        {it.n} / {String(ITEMS.length).padStart(2, "0")}
+      </span>
+      <h2 className="t-h3 mt-4" style={{ color: "var(--title-light-bg)" }}>
+        {it.title}
+      </h2>
+      <p className="t-body mt-5 max-w-[46ch]" style={{ color: "#5a5a5a" }}>
+        {it.body}
+      </p>
+      <a
+        href="#contact"
+        className="btn btn-ghost mt-8"
+        style={{ color: "var(--navy)", borderColor: "rgba(6,6,68,.28)" }}
+      >
+        Talk to us <span className="arrow">→</span>
+      </a>
+    </>
+  );
+}
+
 export default function PinnedShowcase() {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -68,10 +92,44 @@ export default function PinnedShowcase() {
     <section
       ref={root}
       data-nav-theme="light"
-      className="relative"
-      style={{ height: `${ITEMS.length * 100}vh`, background: "var(--paper)" }}
+      className="relative md:h-[var(--pin-h)]"
+      style={
+        {
+          "--pin-h": `${ITEMS.length * 100}vh`,
+          background: "var(--paper)",
+        } as React.CSSProperties
+      }
     >
-      <div className="on-light sticky top-0 flex h-screen items-center overflow-hidden">
+      {/* Phones get a plain stack. Pinning three items into one viewport there crops the
+          panel and pushes the index label up behind the nav, so the pin is desktop-only. */}
+      <div className="on-light wrap py-[clamp(64px,11vh,110px)] md:hidden">
+        {ITEMS.map((it, i) => (
+          <div
+            key={it.n}
+            className={i === 0 ? "" : "mt-14 border-t border-black/10 pt-12"}
+          >
+            <Copy it={it} />
+            <div
+              className="relative mt-8 aspect-[16/10] w-full overflow-hidden rounded-[18px]"
+              style={{ background: "#0d0d18" }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={it.img}
+                alt={it.alt}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: "linear-gradient(to top, rgba(6,6,68,.35), transparent 55%)" }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="on-light sticky top-0 hidden h-screen items-center overflow-hidden md:flex">
         <div className="wrap grid w-full items-center gap-10 md:grid-cols-[1fr_minmax(320px,46%)]">
           {/* ---------- left: swapping text ---------- */}
           <div className="relative flex gap-6">
@@ -94,18 +152,7 @@ export default function PinnedShowcase() {
                     display: i === active ? "block" : "none",
                   }}
                 >
-                  <span className="t-mono block" style={{ color: "#6b6b6b" }}>
-                    {it.n} / {String(ITEMS.length).padStart(2, "0")}
-                  </span>
-                  <h2 className="t-h3 mt-4" style={{ color: "var(--title-light-bg)" }}>
-                    {it.title}
-                  </h2>
-                  <p className="t-body mt-5 max-w-[46ch]" style={{ color: "#5a5a5a" }}>
-                    {it.body}
-                  </p>
-                  <a href="#contact" className="btn btn-ghost mt-8" style={{ color: "var(--navy)", borderColor: "rgba(6,6,68,.28)" }}>
-                    Talk to us <span className="arrow">→</span>
-                  </a>
+                  <Copy it={it} />
                 </div>
               ))}
             </div>

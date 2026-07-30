@@ -22,8 +22,10 @@ export default function ContactFooter() {
   const [state, setState] = useState<State>("idle");
   const [form, setForm] = useState({ name: "", company: "", email: "", service: SERVICES[0], message: "" });
 
+  /* 16px on phones is deliberate: iOS Safari zooms the whole page when a focused field
+     is under 16px, which throws the layout off. Desktop keeps the intended 15px. */
   const field =
-    "w-full border-0 border-b bg-transparent px-0 py-3 text-[15px] font-light text-white outline-none transition-colors placeholder:text-white/35";
+    "w-full border-0 border-b bg-transparent px-0 py-3 text-[16px] font-light text-white outline-none transition-colors placeholder:text-white/35 md:text-[15px]";
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -174,7 +176,7 @@ export default function ContactFooter() {
                 <a
                   key={l}
                   href={`#${l.toLowerCase().replace(/\s+/g, "-").replace("about-us", "who-we-are").replace("our-services", "services").replace("contact-us", "contact")}`}
-                  className="t-body no-underline transition-colors hover:text-[var(--gold)]"
+                  className="t-body block py-3 no-underline transition-colors hover:text-[var(--gold)] md:py-0"
                 >
                   {l}
                 </a>

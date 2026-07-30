@@ -90,11 +90,12 @@ export default function WhoWeAre() {
           {COLS.map((c, i) => (
             <div
               key={c.n}
-              className="who-col flex flex-col px-0 py-8 md:px-8 md:py-2"
-              style={{
-                borderLeft: i === 0 ? "none" : "1px solid rgba(255,255,255,.11)",
-                borderTop: "1px solid rgba(255,255,255,.11)",
-              }}
+              /* the divider is a column separator — stacked on mobile it has to be the top
+                 rule only, or every block picks up a stray hairline down its left edge */
+              className={`who-col flex flex-col px-0 py-8 md:px-8 md:py-2 ${
+                i === 0 ? "" : "md:border-l md:border-white/11"
+              }`}
+              style={{ borderTop: "1px solid rgba(255,255,255,.11)" }}
             >
               <span className="t-mono mt-7 block">
                 {c.n} &nbsp;{c.kicker}
