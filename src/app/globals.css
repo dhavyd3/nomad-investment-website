@@ -200,18 +200,107 @@ section { position: relative; }
   opacity: 1;
 }
 
-/* The open mobile sheet sits over the hero reel. 30% black plus a blur is nowhere near
-   enough to read eleven menu labels against moving video, so the sheet gets its own
-   near-solid ground — and keeps it over the light sections too, because everything
-   inside it is styled white. */
-.nav-root .nav-sheet,
-.nav-root[data-light] .nav-sheet {
-  background: rgba(5, 5, 46, 0.985);
-  border-color: rgba(255, 255, 255, 0.14);
+/* ---------- mobile sheet (on.energy pattern) ----------
+   Closed, the bar carries only the mark and the burger. Open, it spans the width and
+   drops a stack of rows beneath it.
+
+   30% black plus a blur is nowhere near enough to read menu labels against moving video,
+   so the open menu gets its own near-solid ground. It keeps that ground over the light
+   sections too, because everything inside it is styled light — which is also why the bar
+   itself is forced back to its dark treatment while the sheet is open. */
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  /* below the bar and sheet but inside the header's stacking context, so it covers the
+     page without covering the menu */
+  z-index: -1;
+  /* fully opaque, unlike the old panel: across the whole viewport even 1.5% let the hero
+     headline read through behind the rows */
+  background: #05052e;
+  animation: navScrimIn 0.28s var(--ease) both;
 }
-.nav-root[data-light] .nav-sheet a,
-.nav-root[data-light] .nav-sheet button { color: #fff; }
-.nav-root[data-light] .nav-sheet .btn-gold { color: var(--navy); }
+@keyframes navScrimIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The doubled attribute is deliberate: the [data-light] adapt rules below carry the same
+   specificity, so without it whichever came last in the file would win and the bar would
+   stay pale over the light sections while the sheet under it went dark. */
+.nav-root[data-menu="true"],
+.nav-root[data-light][data-menu="true"] { --nav-fg: #fff; }
+.nav-root[data-menu="true"] .nav-pill,
+.nav-root[data-light][data-menu="true"] .nav-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-divider {
+  width: 1px;
+  height: 34px;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+.nav-sheet {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  /* dvh, so the sheet still ends above the iOS toolbar rather than behind it */
+  height: calc(100dvh - 92px - clamp(12px, 2vw, 20px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: navSheetIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes navSheetIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+.nav-sheet-list { display: flex; flex-direction: column; gap: 8px; }
+
+.nav-root .nav-sheet-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-decoration: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.25s var(--ease);
+}
+.nav-sheet-sub {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0 2px 14px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(255, 255, 255, 0.22);
+}
+.nav-root .nav-sheet-subrow {
+  padding: 0.72rem 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.74);
+  transition: color 0.25s var(--ease);
+}
+.nav-root .nav-sheet-subrow:hover { color: var(--gold); }
+
+.nav-sheet-foot { margin-top: auto; padding-top: 24px; }
 
 /* adapts to whatever it is sitting over — sections opt in with data-nav-theme="light" */
 .nav-root[data-light] .nav-pill {

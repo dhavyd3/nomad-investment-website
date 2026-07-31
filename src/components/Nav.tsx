@@ -54,6 +54,7 @@ export default function Nav() {
   const [lang, setLang] = useState("EN");
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [sub, setSub] = useState(false);
   const [services, setServices] = useState(false);
   const [onLight, setOnLight] = useState(false);
   const box = useRef<HTMLDivElement>(null);
@@ -72,6 +73,7 @@ export default function Nav() {
       if (e.key !== "Escape") return;
       setServices(false);
       setOpen(false);
+      closeMenu();
     };
     document.addEventListener("keydown", esc);
     return () => document.removeEventListener("keydown", esc);
@@ -97,15 +99,17 @@ export default function Nav() {
      otherwise it stays mounted underneath the full nav. */
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
-    const close = () => { if (mq.matches) setMenu(false); };
+    const close = () => { if (mq.matches) { setMenu(false); setSub(false); } };
     mq.addEventListener("change", close);
     return () => mq.removeEventListener("change", close);
   }, []);
 
+  const closeMenu = () => { setMenu(false); setSub(false); };
+
   /* Native anchor jumps fight Lenis' rAF loop, so route them through it like the
      desktop links already do. */
   const goToAnchor = (href: string) => {
-    setMenu(false);
+    closeMenu();
     const el = document.querySelector(href) as HTMLElement | null;
     if (el) window.setTimeout(() => scrollTo(el.offsetTop), 0);
   };
@@ -144,9 +148,21 @@ export default function Nav() {
   return (
     <header
       data-light={onLight ? "true" : undefined}
+      data-menu={menu ? "true" : undefined}
       className="nav-root fixed inset-x-0 top-0 z-50 px-[clamp(14px,4vw,56px)] pt-[clamp(12px,2vw,20px)]"
     >
-      <div className="nav-pill mx-auto flex h-[72px] max-w-[1240px] items-center gap-6 px-4 sm:px-6">
+      {/* the rows are translucent, so the page behind has to be covered or the hero type
+          reads straight through the gaps between them */}
+      {menu && <div aria-hidden="true" className="nav-scrim lg:hidden" />}
+
+      {/* On mobile the bar carries nothing but the mark and the burger, so it shrinks to
+          its content and sits right — on.energy's pattern. Opening it spans the width
+          again. Desktop keeps the centred 1240px pill either way. */}
+      <div
+        className={`nav-pill flex h-[72px] items-center gap-4 px-4 sm:px-6 lg:mx-auto lg:w-full lg:max-w-[1240px] lg:gap-6 ${
+          menu ? "w-full" : "ml-auto w-fit"
+        }`}
+      >
         {/* logo + wordmark */}
         {/* no text-white here: .nav-root a supplies --nav-fg, which turns navy over the
             light sections. Hardcoding white left the wordmark at 1.04:1 on them. */}
@@ -164,8 +180,9 @@ export default function Nav() {
           </span>
         </a>
 
-        {/* spacing, per the brief */}
-        <div className="flex-1" />
+        {/* spacing, per the brief. Hidden on mobile so the shrunken bar does not carry a
+            gap either side of a zero-width spacer. */}
+        <div className="hidden flex-1 lg:block" />
 
         <nav className="hidden items-center gap-8 lg:flex">
           {LINKS.map((l) =>
@@ -268,11 +285,14 @@ export default function Nav() {
           Get in touch <span className="arrow">→</span>
         </a>
 
+        {/* on.energy separates the mark from the toggle with a hairline */}
+        <span aria-hidden="true" className="nav-divider lg:hidden" />
+
         {/* mobile toggle — the live site is missing this entirely */}
         <button
-          onClick={() => setMenu((v) => !v)}
+          onClick={() => (menu ? closeMenu() : setMenu(true))}
           aria-expanded={menu}
-          aria-label="Menu"
+          aria-label={menu ? "Close menu" : "Menu"}
           className="nav-chip ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
         >
           <span className="relative block h-[10px] w-[18px]">
@@ -299,56 +319,84 @@ export default function Nav() {
       </div>
 
       {menu && (
-        /* Eleven rows plus the CTA is taller than a landscape phone, and the panel is
-           inside a fixed header — without its own scroller the bottom of the menu is
-           simply unreachable. Cap it to what is left below the pill and let it scroll. */
-        <div className="nav-pill nav-sheet mx-auto mt-2 max-h-[calc(100dvh-104px)] max-w-[1240px] overflow-y-auto overscroll-contain p-3 lg:hidden">
-          {LINKS.map((l) => (
-            <div key={l.href} className="border-b border-white/10 last:border-0">
-              <a
-                href={l.href}
-                onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
-                className="block py-3.5 text-[15px] text-white no-underline"
-              >
-                {l.label}
-              </a>
-              {l.menu && (
-                <div className="mb-3 ml-1 flex flex-col border-l-2 border-white/20 pl-3">
-                  {l.menu.map((s) => (
-                    <button
-                      key={s.label}
-                      onClick={() => { setMenu(false); goToService(s.at); }}
-                      className="py-2.5 text-left text-[13.5px] leading-snug text-white/70"
+        /* The sheet is inside a fixed header, so it needs its own scroller — with the
+           services group expanded a landscape phone cannot reach the bottom otherwise. */
+        <div className="nav-sheet lg:hidden">
+          <div className="nav-sheet-list">
+            {LINKS.map((l) =>
+              l.menu ? (
+                <div key={l.href}>
+                  <button
+                    type="button"
+                    className="nav-sheet-row"
+                    aria-expanded={sub}
+                    onClick={() => setSub((v) => !v)}
+                  >
+                    {l.label}
+                    <svg
+                      className="nav-caret"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      aria-hidden="true"
+                      style={{ transform: sub ? "rotate(180deg)" : "none" }}
                     >
-                      {s.label}
-                    </button>
-                  ))}
+                      <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+
+                  {sub && (
+                    <div className="nav-sheet-sub">
+                      {l.menu.map((s) => (
+                        <button
+                          key={s.label}
+                          type="button"
+                          className="nav-sheet-subrow"
+                          onClick={() => { closeMenu(); goToService(s.at); }}
+                        >
+                          {s.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
-          <div className="mt-3 flex items-center gap-1">
-            {LANGS.map((c) => (
-              <button
-                key={c}
-                onClick={() => setLang(c)}
-                aria-pressed={c === lang}
-                className={`rounded px-3 py-2 text-[12px] tracking-[0.08em] ${
-                  c === lang ? "text-[var(--gold)]" : "text-white/60"
-                }`}
-                style={{ fontFamily: "var(--font-geist-mono)" }}
-              >
-                {c}
-              </button>
-            ))}
+              ) : (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
+                  className="nav-sheet-row"
+                >
+                  {l.label}
+                </a>
+              )
+            )}
           </div>
-          <a
-            href="#contact"
-            onClick={(e) => { e.preventDefault(); goToAnchor("#contact"); }}
-            className="btn btn-gold mt-3 w-full justify-center"
-          >
-            Get in touch <span className="arrow">→</span>
-          </a>
+
+          {/* pinned to the bottom of the sheet, as on the reference */}
+          <div className="nav-sheet-foot">
+            <div className="flex items-center gap-1">
+              {LANGS.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setLang(c)}
+                  aria-pressed={c === lang}
+                  className={`rounded px-3 py-2 text-[12px] tracking-[0.08em] ${
+                    c === lang ? "text-[var(--gold)]" : "text-white/60"
+                  }`}
+                  style={{ fontFamily: "var(--font-geist-mono)" }}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <a
+              href="#contact"
+              onClick={(e) => { e.preventDefault(); goToAnchor("#contact"); }}
+              className="btn btn-gold mt-3 w-full justify-center"
+            >
+              Get in touch <span className="arrow">→</span>
+            </a>
+          </div>
         </div>
       )}
     </header>
