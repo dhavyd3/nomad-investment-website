@@ -2,20 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-/* Mirrors the chapter thresholds in ServiceScroll so a dropdown pick can land on the
-   right frame of the scrubbed section rather than dumping everyone at the top of it. */
+/* Ids match the zones on the services board, so a pick lands the camera on that zone
+   rather than dropping everyone at the top of the page. */
 const SERVICES = [
-  { label: "Business Consulting & Investor Relations", at: 0.0 },
-  { label: "ICT Consultancy, AI & Cybersecurity", at: 0.28 },
-  { label: "Engineering & Infrastructure", at: 0.48 },
-  { label: "Agricultural Services & Consultancy", at: 0.7 },
-  { label: "Oil, Gas & Green Energy", at: 0.88 },
+  { label: "Business Consulting & Investor Relations", id: "business" },
+  { label: "ICT Consultancy, AI & Cybersecurity", id: "ict" },
+  { label: "Engineering & Infrastructure", id: "engineering" },
+  { label: "Agricultural Services & Consultancy", id: "agriculture" },
+  { label: "Oil, Gas & Green Energy", id: "energy" },
 ];
 
 const LINKS = [
   { label: "About Us", href: "/about" },
-  { label: "Our Services", href: "#services", menu: SERVICES },
+  { label: "Our Services", href: "/services", menu: SERVICES },
   { label: "Contact Us", href: "/contact" },
 ];
 
@@ -41,15 +42,6 @@ function scrollTo(top: number) {
   else window.scrollTo({ top, behavior: "smooth" });
 }
 
-/* #services is 620vh of pinned scrubbing, so its chapters are scroll offsets rather than
-   anchors. Convert a chapter's progress back into a scroll position. */
-function goToService(at: number) {
-  const el = document.getElementById("services");
-  if (!el) return;
-  const scrollable = Math.max(0, el.offsetHeight - window.innerHeight);
-  // land just past the threshold so the chapter is the active one on arrival
-  scrollTo(el.offsetTop + scrollable * Math.min(at + 0.02, 1));
-}
 
 export default function Nav() {
   const [lang, setLang] = useState("EN");
@@ -60,6 +52,7 @@ export default function Nav() {
   const [onLight, setOnLight] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const leave = useRef(0);
+  const router = useRouter();
 
   useEffect(() => {
     const away = (e: MouseEvent) => {
@@ -206,11 +199,7 @@ export default function Nav() {
                   data-open={services ? "true" : undefined}
                   aria-expanded={services}
                   aria-haspopup="true"
-                  onClick={() => {
-                    setServices(false);
-                    const el = document.getElementById("services");
-                    if (el) scrollTo(el.offsetTop);
-                  }}
+                  onClick={() => { setServices(false); router.push(l.href); }}
                 >
                   <Label label={l.label} />
                   <Caret />
@@ -220,16 +209,16 @@ export default function Nav() {
                   <ul className="nav-pill nav-menu">
                     {l.menu.map((s) => (
                       <li key={s.label}>
-                        <button
-                          type="button"
+                        <Link
+                          href={`/services#${s.id}`}
                           className="nav-menu-item"
-                          onClick={() => { setServices(false); goToService(s.at); }}
+                          onClick={() => setServices(false)}
                         >
                           {s.label}
                           <svg className="tick" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                             <path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
-                        </button>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -356,14 +345,14 @@ export default function Nav() {
                   {sub && (
                     <div className="nav-sheet-sub">
                       {l.menu.map((s) => (
-                        <button
+                        <Link
                           key={s.label}
-                          type="button"
+                          href={`/services#${s.id}`}
                           className="nav-sheet-subrow"
-                          onClick={() => { closeMenu(); goToService(s.at); }}
+                          onClick={closeMenu}
                         >
                           {s.label}
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   )}
