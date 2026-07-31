@@ -167,7 +167,7 @@ export default function AboutPage() {
           <p className="t-body mt-6 max-w-[46ch]">
             Plot 13, Mukwano Courts, Buganda Road, Floor 4, Suite 401–402, Kampala, Uganda.
           </p>
-          <Link href="/#contact" className="btn btn-gold mt-9">
+          <Link href="/contact" className="btn btn-gold mt-9">
             Get in touch <span className="arrow">→</span>
           </Link>
         </section>

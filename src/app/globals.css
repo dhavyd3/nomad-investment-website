@@ -44,6 +44,14 @@ body {
   overflow-x: clip;
 }
 
+/* Registered so it can be animated — a plain custom property is not interpolable, and
+   the whole fold-away depends on driving this from a keyframe. */
+@property --file-fold {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 54px;
+}
+
 /* Everything below is a component class, and it MUST sit in the components layer.
    Unlayered CSS outranks anything Tailwind puts in its own layers, so out here
    `.btn { display: inline-flex }` beat `hidden`/`lg:inline-flex` (the desktop CTA
@@ -637,6 +645,123 @@ section { position: relative; }
 .about-disciplines li .t-mono { flex-shrink: 0; }
 
 .about-cta { text-align: left; }
+
+/* ---------- file card (21st.dev stagger-testimonials sheet) ----------
+   Rectangle with only the top-right corner cut, plus a 2px bar rotated 45deg out of that
+   corner for the crease. The original fixes both at 50px; ours reads --file-fold so the
+   sheet can fold itself open and then away. */
+.file-card {
+  --file-fold: 54px;
+  position: relative;
+  background: var(--paper);
+  color: var(--navy);
+  border: 2px solid rgba(6, 6, 68, 0.16);
+  clip-path: polygon(0 0, calc(100% - var(--file-fold)) 0, 100% var(--file-fold), 100% 100%, 0 100%);
+  box-shadow: 0 10px 0 4px rgba(6, 6, 68, 0.22);
+  transform-origin: 100% 0;
+  will-change: transform, opacity;
+}
+.file-crease {
+  position: absolute;
+  top: calc(var(--file-fold) - 2px);
+  right: -2px;
+  height: 2px;
+  /* the hypotenuse of the cut — the original hard-codes it as sqrt(5000) for a 50px fold */
+  width: calc(var(--file-fold) * 1.41421);
+  transform: rotate(45deg);
+  transform-origin: top right;
+  background: rgba(6, 6, 68, 0.16);
+}
+
+/* The sheet keeps folding along the crease it already has, then turns over that diagonal
+   and goes. rotate3d(1,-1,0) is the card's own top-right-to-bottom-left axis, so it reads
+   as paper folding rather than a box spinning. */
+.file-card[data-state="folding"] {
+  animation: fileFoldAway 980ms cubic-bezier(0.66, 0, 0.86, 0.2) forwards;
+  pointer-events: none;
+}
+@keyframes fileFoldAway {
+  0% {
+    --file-fold: 54px;
+    transform: perspective(1600px) rotate3d(1, -1, 0, 0deg) scale(1);
+    opacity: 1;
+  }
+  32% {
+    --file-fold: 190px;
+    transform: perspective(1600px) rotate3d(1, -1, 0, 12deg) scale(0.985);
+    opacity: 1;
+  }
+  100% {
+    --file-fold: 190px;
+    transform: perspective(1600px) rotate3d(1, -1, 0, 172deg) scale(0.68);
+    opacity: 0;
+  }
+}
+
+.file-thanks { animation: fileThanksIn 760ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes fileThanksIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); filter: blur(7px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+
+/* ---------- contact ---------- */
+.contact-shell { display: grid; place-items: center; padding-block: clamp(56px, 8vh, 96px); }
+.contact-sheet {
+  width: min(760px, 100%);
+  /* the fold eats the top-right corner, so the header needs to start clear of it */
+  padding: clamp(30px, 4vw, 46px);
+  padding-top: clamp(74px, 8vw, 96px);
+}
+.contact-thanks {
+  width: min(760px, 100%);
+  padding: clamp(48px, 6vw, 76px);
+  padding-top: clamp(80px, 8vw, 104px);
+  min-height: 340px;
+}
+.contact-field {
+  width: 100%;
+  padding: 0.85rem 0;
+  border: 0;
+  border-bottom: 1px solid rgba(6, 6, 68, 0.24);
+  background: transparent;
+  color: var(--navy);
+  font-family: inherit;
+  font-weight: 300;
+  /* 16px on phones or iOS zooms the page on focus */
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s var(--ease);
+}
+@media (min-width: 768px) { .contact-field { font-size: 15px; } }
+.contact-field::placeholder { color: rgba(6, 6, 68, 0.36); }
+.contact-field:focus { border-bottom-color: var(--navy); }
+.contact-label { display: block; }
+.contact-label .t-mono { color: #6b6b6b; }
+.contact-grid { display: grid; gap: 1.6rem; }
+@media (min-width: 640px) { .contact-grid.is-two { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- site footer ---------- */
+.site-footer { border-top: 1px solid rgba(255, 255, 255, 0.12); padding-block: clamp(56px, 9vh, 96px); }
+.site-footer-grid { display: grid; gap: 44px 3vw; }
+@media (min-width: 760px) { .site-footer-grid { grid-template-columns: 1.2fr 1fr 1fr; } }
+.site-footer dt { margin-bottom: 0.4rem; }
+.site-footer dd { margin: 0 0 1.4rem; }
+.site-footer a { color: inherit; text-decoration: none; transition: color 0.25s var(--ease); }
+.site-footer a:hover { color: var(--gold); }
+.site-footer-base {
+  margin-top: clamp(44px, 7vh, 76px);
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  justify-content: space-between;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .file-card[data-state="folding"] { animation-duration: 1ms; }
+  .file-thanks { animation-duration: 1ms; }
+}
 
 } /* end @layer components */
 

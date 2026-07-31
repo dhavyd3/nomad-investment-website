@@ -16,7 +16,7 @@ const SERVICES = [
 const LINKS = [
   { label: "About Us", href: "/about" },
   { label: "Our Services", href: "#services", menu: SERVICES },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 const LANGS = ["EN", "FR", "SW", "LG"];
@@ -290,9 +290,9 @@ export default function Nav() {
           )}
         </div>
 
-        <a href="#contact" className="btn btn-gold hidden lg:inline-flex">
+        <Link href="/contact" className="btn btn-gold hidden lg:inline-flex">
           Get in touch <span className="arrow">→</span>
-        </a>
+        </Link>
 
         {/* on.energy separates the mark from the toggle with a hairline */}
         <span aria-hidden="true" className="nav-divider lg:hidden" />
@@ -404,13 +404,13 @@ export default function Nav() {
                 </button>
               ))}
             </div>
-            <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); goToAnchor("#contact"); }}
+            <Link
+              href="/contact"
+              onClick={closeMenu}
               className="btn btn-gold mt-3 w-full justify-center"
             >
               Get in touch <span className="arrow">→</span>
-            </a>
+            </Link>
           </div>
         </div>
       )}
