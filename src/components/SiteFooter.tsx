@@ -33,7 +33,7 @@ export default function SiteFooter() {
           </div>
           <p className="t-mono mt-5">Strategize · Organize · Globalize</p>
           <p className="t-body mt-5 max-w-[34ch]">
-            An East African firm getting business done across twelve disciplines, under one
+            An East African firm getting business done across eleven disciplines, under one
             operating standard.
           </p>
         </div>

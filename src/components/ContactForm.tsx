@@ -15,7 +15,6 @@ const DISCIPLINES = [
   "Medical Supplies & Health Informatics",
   "Oil & Gas Consultancy",
   "Environment & Green Energy",
-  "Events Management",
 ];
 
 export default function ContactForm() {
@@ -47,9 +46,9 @@ export default function ContactForm() {
           Thank you — we have your brief.
         </h2>
         <p className="t-body mt-6 max-w-[46ch]" style={{ color: "#4a4a5c" }}>
-          Someone from the relevant discipline will come back to you from Kampala. If it is
-          urgent, call <a href="tel:+256414675306" style={{ color: "var(--navy)" }}>+256 (0) 414 675306</a>{" "}
-          or reach us on WhatsApp.
+          We will get back to you soon. If it is urgent, call{" "}
+          <a href="tel:+256414675306" style={{ color: "var(--navy)" }}>+256 (0) 414 675306</a> or
+          reach us on WhatsApp.
         </p>
         <button
           type="button"

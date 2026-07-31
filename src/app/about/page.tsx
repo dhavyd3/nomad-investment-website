@@ -6,7 +6,7 @@ import { RevealWords, RevealChars } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "About — Nomad Investments Limited",
   description:
-    "Founded in 2016, Nomad Investments Limited is an East African company built to get business done — across twelve disciplines, from one operating standard in Kampala.",
+    "Founded in 2016, Nomad Investments Limited is an East African company built to get business done — across eleven disciplines, from one operating standard in Kampala.",
 };
 
 /* Terminal's about page numbers its argument and alternates the image side down the
@@ -77,7 +77,6 @@ const DISCIPLINES = [
   "Medical Supplies & Health Informatics",
   "Oil & Gas Consultancy",
   "Environment & Green Energy",
-  "Events Management",
 ];
 
 export default function AboutPage() {
@@ -99,7 +98,7 @@ export default function AboutPage() {
           />
           <RevealChars
             className="t-lead mt-9 max-w-[54ch]"
-            text="Founded in 2016 and operating from Kampala, we work across twelve disciplines under a single delivery standard — strategize, organize, globalize."
+            text="Founded in 2016 and operating from Kampala, we work across eleven disciplines under a single delivery standard — strategize, organize, globalize."
           />
         </section>
 
@@ -151,7 +150,7 @@ export default function AboutPage() {
         </section>
 
         <section className="wrap about-disciplines">
-          <RevealWords as="h2" className="t-h2 max-w-[20ch]" text="Twelve disciplines, one standard" />
+          <RevealWords as="h2" className="t-h2 max-w-[20ch]" text="Eleven disciplines, one standard" />
           <ul>
             {DISCIPLINES.map((d, i) => (
               <li key={d}>
