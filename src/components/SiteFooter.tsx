@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Brandmark from "@/components/Brandmark";
 
 /* Contact details are the ones published on nomadinvestments.co.ug. */
 const REACH = [
@@ -18,19 +19,9 @@ export default function SiteFooter() {
     <footer className="site-footer wrap">
       <div className="site-footer-grid">
         <div>
-          <div className="flex items-center gap-3">
-            <span
-              className="grid h-9 w-9 place-items-center rounded-full border-2 text-[7px] tracking-[0.08em]"
-              style={{ borderColor: "var(--gold)", fontFamily: "var(--font-geist-mono)" }}
-            >
-              NIL
-            </span>
-            <span className="text-[12px] font-medium leading-[1.15] tracking-[0.02em]">
-              NOMAD INVESTMENTS
-              <br />
-              LIMITED
-            </span>
-          </div>
+          {/* .site-footer a already carries the gold hover, so the mark picks up the same
+              affordance as the links below it */}
+          <Brandmark size="footer" />
           <p className="t-mono mt-5">Strategize · Organize · Globalize</p>
           <p className="t-body mt-5 max-w-[34ch]">
             An East African firm getting business done across eleven disciplines, under one

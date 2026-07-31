@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Brandmark from "@/components/Brandmark";
 
 const SERVICES = [
   "ICT Consultancy, AI & Cybersecurity",
@@ -155,19 +156,12 @@ export default function ContactFooter() {
         <footer className="mt-[clamp(80px,13vh,150px)] border-t border-white/12 pb-10 pt-10">
           <div className="flex flex-wrap items-end justify-between gap-8">
             <div>
-              <div className="flex items-center gap-3">
-                <span
-                  className="grid h-8 w-8 place-items-center rounded-full border-2 text-[6px] tracking-[0.08em]"
-                  style={{ borderColor: "var(--gold)", fontFamily: "var(--font-geist-mono)" }}
-                >
-                  NIL
-                </span>
-                <span className="text-[12px] font-medium leading-[1.15] tracking-[0.02em]">
-                  NOMAD INVESTMENTS
-                  <br />
-                  LIMITED
-                </span>
-              </div>
+              {/* nothing styles anchors inside this section, so the hover matches the
+                  sibling links by hand */}
+              <Brandmark
+                size="compact"
+                className="transition-colors hover:text-[var(--gold)]"
+              />
               <p className="t-mono mt-5">Strategize · Organize · Globalize</p>
             </div>
 

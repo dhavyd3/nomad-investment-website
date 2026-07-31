@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Brandmark from "@/components/Brandmark";
 
 /* Ids match the zones on the services board, so a pick lands the camera on that zone
    rather than dropping everyone at the top of the page. */
@@ -159,22 +160,12 @@ export default function Nav() {
           menu ? "w-full" : "ml-auto w-fit"
         }`}
       >
-        {/* logo + wordmark */}
-        {/* no text-white here: .nav-root a supplies --nav-fg, which turns navy over the
+        {/* logo + wordmark — the way home from every page. It used to be href="#top",
+            which only resolves on the homepage, so from /about, /services and /contact
+            the click went nowhere.
+            No text-white on it: .nav-root a supplies --nav-fg, which turns navy over the
             light sections. Hardcoding white left the wordmark at 1.04:1 on them. */}
-        <a href="#top" className="flex shrink-0 items-center gap-3 no-underline">
-          <span
-            className="grid h-9 w-9 place-items-center rounded-full border-2 text-[7px] tracking-[0.08em]"
-            style={{ borderColor: "var(--gold)", fontFamily: "var(--font-geist-mono)" }}
-          >
-            NIL
-          </span>
-          <span className="text-[12px] font-medium leading-[1.15] tracking-[0.02em] sm:text-[13px]">
-            NOMAD INVESTMENTS
-            <br />
-            LIMITED
-          </span>
-        </a>
+        <Brandmark size="nav" onNavigate={closeMenu} />
 
         {/* spacing, per the brief. Hidden on mobile so the shrunken bar does not carry a
             gap either side of a zero-width spacer. */}
