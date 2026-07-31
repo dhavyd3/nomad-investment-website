@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 /* Mirrors the chapter thresholds in ServiceScroll so a dropdown pick can land on the
    right frame of the scrubbed section rather than dumping everyone at the top of it. */
@@ -13,7 +14,7 @@ const SERVICES = [
 ];
 
 const LINKS = [
-  { label: "About Us", href: "#who-we-are" },
+  { label: "About Us", href: "/about" },
   { label: "Our Services", href: "#services", menu: SERVICES },
   { label: "Contact Us", href: "#contact" },
 ];
@@ -107,7 +108,9 @@ export default function Nav() {
   const closeMenu = () => { setMenu(false); setSub(false); };
 
   /* Native anchor jumps fight Lenis' rAF loop, so route them through it like the
-     desktop links already do. */
+     desktop links already do. Real routes (/about) are left to the router — passing one
+     to querySelector throws, and preventDefault would then strand the click. */
+  const isAnchor = (href: string) => href.startsWith("#");
   const goToAnchor = (href: string) => {
     closeMenu();
     const el = document.querySelector(href) as HTMLElement | null;
@@ -233,14 +236,20 @@ export default function Nav() {
                 )}
               </div>
             ) : (
-              <a
-                key={l.href}
-                className="nav-link"
-                href={l.href}
-                onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
-              >
-                <Label label={l.label} />
-              </a>
+              isAnchor(l.href) ? (
+                <a
+                  key={l.href}
+                  className="nav-link"
+                  href={l.href}
+                  onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
+                >
+                  <Label label={l.label} />
+                </a>
+              ) : (
+                <Link key={l.href} className="nav-link" href={l.href} onClick={closeMenu}>
+                  <Label label={l.label} />
+                </Link>
+              )
             )
           )}
         </nav>
@@ -360,14 +369,20 @@ export default function Nav() {
                   )}
                 </div>
               ) : (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
-                  className="nav-sheet-row"
-                >
-                  {l.label}
-                </a>
+                isAnchor(l.href) ? (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    onClick={(e) => { e.preventDefault(); goToAnchor(l.href); }}
+                    className="nav-sheet-row"
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link key={l.href} href={l.href} onClick={closeMenu} className="nav-sheet-row">
+                    {l.label}
+                  </Link>
+                )
               )
             )}
           </div>

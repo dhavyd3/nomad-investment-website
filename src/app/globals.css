@@ -511,6 +511,133 @@ section { position: relative; }
   filter: blur(28px);
 }
 
+/* ---------- reveals (terminal's about page) ---------- */
+/* Headings: each word rises out of a clipped line on a stagger. */
+.rv-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.rv-word-in {
+  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  opacity: 0;
+  transition:
+    transform 1.1s cubic-bezier(0.19, 1, 0.22, 1),
+    opacity 0.7s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+.rv-words.in .rv-word-in { transform: none; opacity: 1; }
+
+/* Body copy: set dim, then lit character by character as the block crosses the viewport.
+   `inline-block` on the word wrapper keeps a word from breaking mid-way across a line. */
+.rv-wordwrap { display: inline-block; }
+.rv-char {
+  color: color-mix(in srgb, currentColor 26%, transparent);
+  transition: color 0.5s ease;
+}
+.rv-char.lit { color: inherit; }
+
+/* ---------- about ----------
+   The reference stops its canvas at the numbered block, which reads as two separate
+   pages stapled together. Ours runs fixed behind everything and no section carries a
+   background of its own, so there is never an edge to see. The veil is the only thing
+   between the surface and the copy — a single fixed wash, not a per-section colour. */
+.about-veil {
+  position: fixed;
+  inset: 0;
+  z-index: -9;
+  pointer-events: none;
+  /* light enough to leave the surface legible — at the alphas this started on, the dots
+     were all but invisible and the whole point of the background was lost */
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(6, 6, 68, 0.34), transparent 72%),
+    linear-gradient(180deg, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.46) 55%, rgba(5, 5, 16, 0.6) 100%);
+}
+.about { position: relative; }
+.about > section { padding-block: clamp(76px, 12vh, 150px); }
+
+.about-hero {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: clamp(120px, 18vh, 220px);
+}
+
+/* --- numbered points --- */
+.about-points { display: flex; flex-direction: column; gap: clamp(64px, 11vh, 132px); }
+.about-point { display: grid; gap: 32px; align-items: center; }
+.about-point-img {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0b0b1c;
+  aspect-ratio: 16 / 11;
+}
+.about-point-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.about-point-title { display: grid; gap: 0.6rem; margin: 0; font-weight: 400; }
+.about-point-n { color: var(--mono); }
+.about-point-copy .rv-chars { margin-top: 1.4rem; max-width: 46ch; }
+
+@media (min-width: 900px) {
+  .about-point {
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 2.5vw;
+  }
+  /* The reference splits 12 columns as copy(5) · gutter(1) · image(6) and mirrors it,
+     so the image keeps the same width whichever side it lands on. Its panel measures
+     726x658 there — near 11:10, not the portrait ratio its stylesheet declares for
+     narrow screens. A true portrait here made the row 767px and pushed the copy under
+     the fold. */
+  .about-point-img { grid-column: 7 / -1; aspect-ratio: 11 / 10; }
+  .about-point-copy { grid-column: 1 / 6; }
+  .about-point.is-flipped .about-point-img { grid-column: 1 / 7; }
+  .about-point.is-flipped .about-point-copy { grid-column: 8 / -1; }
+}
+
+/* --- mission / vision --- */
+.about-mv { display: grid; gap: clamp(40px, 6vh, 72px); }
+@media (min-width: 900px) { .about-mv { grid-template-columns: 1fr 1fr; column-gap: 5vw; } }
+
+/* --- why --- */
+.about-why-grid {
+  margin-top: clamp(40px, 6vh, 72px);
+  display: grid;
+  gap: 34px 2.5vw;
+}
+@media (min-width: 700px) { .about-why-grid { grid-template-columns: 1fr 1fr; } }
+.about-reason { border-top: 1px solid rgba(255, 255, 255, 0.14); padding-top: 22px; }
+.about-reason h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* --- disciplines --- */
+.about-disciplines ul {
+  margin: clamp(36px, 5vh, 64px) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+}
+@media (min-width: 700px) { .about-disciplines ul { grid-template-columns: 1fr 1fr; column-gap: 3vw; } }
+.about-disciplines li {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.05rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+  font-size: 1.0625rem;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+.about-disciplines li .t-mono { flex-shrink: 0; }
+
+.about-cta { text-align: left; }
+
 } /* end @layer components */
 
 /* ---------- touch ----------
