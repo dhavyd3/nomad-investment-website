@@ -254,6 +254,7 @@ const sw: Dictionary = {
     nl: "Kiholanzi",
     zh: "Kichina",
     sw: "Kiswahili",
+    ar: "Kiarabu",
   },
 };
 

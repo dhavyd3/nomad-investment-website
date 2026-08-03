@@ -257,6 +257,7 @@ const en = {
     nl: "Dutch",
     zh: "Chinese",
     sw: "Swahili",
+    ar: "Arabic",
   },
 };
 

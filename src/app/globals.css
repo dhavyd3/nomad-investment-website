@@ -43,9 +43,11 @@ body {
   margin: 0;
   background: var(--ink);
   color: var(--title-dark-bg);
-  /* Inter carries no CJK glyphs, so Chinese would land on whatever the browser picked
-     first. The CJK stack after it makes that fallback a deliberate choice. */
-  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI",
+  /* Inter carries neither CJK nor Arabic glyphs, so Chinese and Arabic would land on
+     whatever the browser picked first. The stacks after it make each fallback a
+     deliberate choice — the browser reaches past Inter per-glyph, so Latin still
+     renders in Inter on an Arabic page. */
+  font-family: var(--font-inter), var(--font-arabic), system-ui, -apple-system, "Segoe UI",
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -107,7 +109,7 @@ body {
   color: var(--body);
 }
 .t-mono {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-mono), var(--font-arabic), ui-monospace, monospace;
   font-weight: 400;
   font-size: 0.75rem;
   letter-spacing: 0.18em;
@@ -450,7 +452,7 @@ section { position: relative; }
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-geist-mono), var(--font-arabic), monospace;
   text-decoration: none;
   border: 0;
   cursor: pointer;
@@ -501,7 +503,7 @@ section { position: relative; }
   display: flex;
   align-items: center;
   gap: 14px;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-geist-mono), var(--font-arabic), monospace;
   font-size: 0.625rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -761,7 +763,7 @@ section { position: relative; }
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: #fff;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-mono), var(--font-arabic), ui-monospace, monospace;
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0.06em;
@@ -804,7 +806,7 @@ section { position: relative; }
 .loader-count {
   display: block;
   margin-top: 1.25rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-geist-mono), var(--font-arabic), monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.22em;
   color: rgba(255, 255, 255, 0.45);
@@ -990,7 +992,7 @@ section { position: relative; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-geist-mono), var(--font-arabic), monospace;
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1131,6 +1133,81 @@ section { position: relative; }
   .file-thanks { animation-duration: 1ms; }
 }
 
+/* ============================================================
+   Right-to-left (Arabic)
+   `dir="rtl"` on <html> already mirrors the flex and grid axes and the text
+   alignment. What it does not touch is the handful of rules that name a physical
+   side, and the tracking — so those are corrected here rather than by rewriting
+   every rule above into logical properties.
+   ============================================================ */
+
+/* Arabic is a joined script: negative tracking crowds the connections and positive
+   tracking pulls them apart, both of which break the join. The tight -0.04em that
+   makes the Latin headings read the way the brief wants is exactly wrong here. */
+[lang="ar"] .t-h1,
+[lang="ar"] .t-h2,
+[lang="ar"] .t-h3,
+[lang="ar"] .t-lead,
+[lang="ar"] .t-mono,
+[lang="ar"] .hud { letter-spacing: normal; }
+
+/* Arabic has no case, so uppercase is a no-op — but the label loses the size contrast
+   the capitals were giving it, so it gets a touch of weight back instead. */
+[lang="ar"] .t-mono { text-transform: none; font-weight: 500; }
+
+/* The staircase indent on the hero words steps in from the reading edge. */
+[dir="rtl"] .hero-line { padding-left: 0; padding-right: 0; }
+@media (min-width: 640px) {
+  [dir="rtl"] .hero-line { padding-left: 0; padding-right: calc(var(--i) * 4vw); }
+}
+
+/* The hero scrim darkens the side the copy sits on, so it turns over with it. */
+@media (min-width: 768px) {
+  [dir="rtl"] .hero-scrim {
+    background: linear-gradient(
+      -100deg,
+      rgba(6, 6, 68, 0.62) 0%,
+      rgba(6, 6, 68, 0.3) 40%,
+      transparent 72%
+    );
+  }
+}
+
+/* Mobile sheet: the rule marking the nested services group belongs on the reading edge. */
+[dir="rtl"] .nav-sheet-sub {
+  margin: 8px 14px 2px 0;
+  padding-left: 0;
+  padding-right: 16px;
+  border-left: 0;
+  border-right: 2px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Directional glyphs: the CTA arrow and the menu tick both point along the reading
+   direction, and both travel that way on hover. */
+[dir="rtl"] .arrow { display: inline-block; transform: scaleX(-1); }
+[dir="rtl"] .btn:hover .arrow { transform: scaleX(-1) translateX(4px); }
+[dir="rtl"] .nav-menu-item .tick { transform: scaleX(-1) translateX(-4px); }
+[dir="rtl"] .nav-menu-item:hover .tick,
+[dir="rtl"] .nav-menu-item:focus-visible .tick { transform: scaleX(-1); }
+
+/* The honeypot is parked 9999px off-screen. Which side that is has to follow the
+   direction: under RTL the page overflows leftwards, so a field at left:-9999px is
+   inside the scrollable area rather than outside it — it added ~9700px of scrollable
+   width to the contact page. Off the *start* edge is the clipped side in both. */
+[dir="rtl"] .contact-hp { left: auto; right: -9999px; }
+
+/* The services board is a fixed illustration, so the canvas cannot mirror — but the
+   copy panel and the zone rail read against it and do. */
+[dir="rtl"] .svc-hint,
+[dir="rtl"] .svc-panel {
+  left: auto;
+  right: clamp(16px, 5vw, 64px);
+}
+[dir="rtl"] .svc-rail {
+  right: auto;
+  left: clamp(20px, 5vw, 64px);
+}
+
 } /* end @layer components */
 
 /* ---------- touch ----------
@@ -1140,6 +1217,7 @@ section { position: relative; }
   .btn:hover::after { transform: translateY(101%); }
   .btn-ghost:hover { color: #fff; }
   .btn:hover .arrow { transform: none; }
+  [dir="rtl"] .btn:hover .arrow { transform: scaleX(-1); }
   .nav-link:hover::after { opacity: 0; transform: translateX(-50%) scale(0); }
   .nav-root .nav-link:hover { color: var(--nav-fg); }
 }

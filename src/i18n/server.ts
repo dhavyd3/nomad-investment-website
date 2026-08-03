@@ -7,8 +7,9 @@ import es from "./dictionaries/es";
 import nl from "./dictionaries/nl";
 import zh from "./dictionaries/zh";
 import sw from "./dictionaries/sw";
+import ar from "./dictionaries/ar";
 
-const DICTIONARIES: Record<Locale, Dictionary> = { en, fr, es, nl, zh, sw };
+const DICTIONARIES: Record<Locale, Dictionary> = { en, fr, es, nl, zh, sw, ar };
 
 /** Statically imported, so there is no async dictionary load on the render path. */
 export function getDictionary(locale: Locale): Dictionary {

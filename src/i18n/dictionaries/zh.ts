@@ -255,6 +255,7 @@ const zh: Dictionary = {
     nl: "荷兰语",
     zh: "中文",
     sw: "斯瓦希里语",
+    ar: "阿拉伯语",
   },
 };
 

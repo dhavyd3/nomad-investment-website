@@ -11,10 +11,22 @@
  * the dictionaries below carry over untouched.
  */
 
-export const LOCALES = ["en", "fr", "es", "nl", "zh", "sw"] as const;
+export const LOCALES = ["en", "fr", "es", "nl", "zh", "sw", "ar"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "en";
+
+/**
+ * Locales written right-to-left. The value goes on `<html dir>`, which flips the
+ * flex/grid axis and text alignment for the whole document; the handful of places
+ * that pin a side in physical pixels are corrected in the `[dir="rtl"]` block in
+ * globals.css.
+ */
+const RTL_LOCALES: readonly Locale[] = ["ar"];
+
+export function getDir(locale: Locale): "ltr" | "rtl" {
+  return RTL_LOCALES.includes(locale) ? "rtl" : "ltr";
+}
 
 /** Cookie name Next.js itself uses for locale, so it stays familiar. */
 export const LOCALE_COOKIE = "NEXT_LOCALE";
@@ -27,6 +39,7 @@ export const LOCALE_LABELS: Record<Locale, { short: string; name: string }> = {
   nl: { short: "NL", name: "Nederlands" },
   zh: { short: "ZH", name: "中文" },
   sw: { short: "SW", name: "Kiswahili" },
+  ar: { short: "AR", name: "العربية" },
 };
 
 export function isLocale(v: unknown): v is Locale {

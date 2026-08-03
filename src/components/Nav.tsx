@@ -154,7 +154,7 @@ export default function Nav() {
           again. Desktop keeps the centred 1240px pill either way. */}
       <div
         className={`nav-pill flex h-[72px] items-center gap-4 px-4 sm:px-6 lg:mx-auto lg:w-full lg:max-w-[1240px] lg:gap-6 ${
-          menu ? "w-full" : "ml-auto w-fit"
+          menu ? "w-full" : "ms-auto w-fit"
         }`}
       >
         {/* logo + wordmark — the way home from every page. It used to be href="#top",
@@ -249,7 +249,7 @@ export default function Nav() {
           </button>
           {open && (
             <ul
-              className="nav-pill absolute right-0 top-[calc(100%+8px)] w-[86px] list-none overflow-hidden p-1"
+              className="nav-pill absolute end-0 top-[calc(100%+8px)] w-[86px] list-none overflow-hidden p-1"
               style={{ animation: "none" }}
             >
               {LOCALES.map((c: Locale) => (
@@ -259,7 +259,7 @@ export default function Nav() {
                     data-current={c === locale ? "true" : undefined}
                     data-tip={t.languages[c]}
                     lang={c}
-                    className="nav-opt block w-full rounded px-3 py-2 text-left text-[12px] tracking-[0.08em]"
+                    className="nav-opt block w-full rounded px-3 py-2 text-start text-[12px] tracking-[0.08em]"
                     style={{ fontFamily: "var(--font-geist-mono)" }}
                   >
                     {LOCALE_LABELS[c].short}
@@ -282,7 +282,7 @@ export default function Nav() {
           onClick={() => (menu ? closeMenu() : setMenu(true))}
           aria-expanded={menu}
           aria-label={menu ? t.nav.close : t.nav.menu}
-          className="nav-chip ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
+          className="nav-chip ms-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
         >
           <span className="relative block h-[10px] w-[18px]">
             {[0, 4, 8].map((t, i) => (
@@ -369,7 +369,8 @@ export default function Nav() {
 
           {/* pinned to the bottom of the sheet, as on the reference */}
           <div className="nav-sheet-foot">
-            <div className="flex items-center gap-1">
+            {/* wraps: seven locales no longer fit on one line of a narrow phone */}
+            <div className="flex flex-wrap items-center gap-1">
               {LOCALES.map((c: Locale) => (
                 <button
                   key={c}

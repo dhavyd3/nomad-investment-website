@@ -252,6 +252,7 @@ const fr: Dictionary = {
     nl: "Néerlandais",
     zh: "Chinois",
     sw: "Swahili",
+    ar: "Arabe",
   },
 };
 
