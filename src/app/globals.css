@@ -481,6 +481,32 @@ section { position: relative; }
 .btn .arrow { transition: transform 0.4s var(--ease); }
 .btn:hover .arrow { transform: translateX(4px); }
 
+/* The nav CTA has to carry the right-hand end of the bar on its own, and the pill has
+   height to spare but no width to give — so on desktop it grows onto a second line
+   rather than sideways. The cap is in ch and the break comes from the text itself, so
+   every locale's own words decide where it falls; min-height keeps the box the same
+   whether that lands on one line or two (Spanish's CTA is a single word and cannot
+   break, so it stays on one — centred inside the same taller button). */
+@media (min-width: 1024px) {
+  .btn-nav {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9375rem;
+    /* clears the two-line content, so a one-line locale gets the same box rather than
+       a button a pixel shorter than everyone else's */
+    min-height: 58px;
+    /* stacking the label makes the box taller but narrower, which is a wash — the
+       min-width is what stops it collapsing in on itself and keeps the CTA reading
+       as the heaviest thing on the bar */
+    min-width: 184px;
+    justify-content: space-between;
+  }
+  .btn-nav .btn-label {
+    max-width: 11ch;
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+}
+
 /* ---------- reveal ---------- */
 .rise { opacity: 0; transform: translateY(24px); }
 .rise.in {

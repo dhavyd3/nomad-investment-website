@@ -270,8 +270,11 @@ export default function Nav() {
           )}
         </div>
 
-        <Link href="/contact" className="btn btn-gold hidden lg:inline-flex">
-          {t.nav.cta} <span className="arrow">→</span>
+        {/* the label is its own element so it can be capped and wrapped independently
+            of the arrow, which stays centred beside it however many lines it takes */}
+        <Link href="/contact" className="btn btn-gold btn-nav hidden lg:inline-flex">
+          <span className="btn-label">{t.nav.cta}</span>
+          <span className="arrow">→</span>
         </Link>
 
         {/* on.energy separates the mark from the toggle with a hairline */}
