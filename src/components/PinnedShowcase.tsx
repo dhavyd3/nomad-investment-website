@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useI18n } from "@/i18n/I18nProvider";
 
 /**
  * Terminal-industries' pinned section, rebuilt with images instead of a video.
@@ -10,41 +11,24 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
  * over like a page. Small numeric index + a progress rail follow the scroll.
  */
 const ITEMS = [
-  {
-    n: "01",
-    title: "Agriculture",
-    body: "We enhance agricultural productivity and sustainability through innovative infrastructure and expert consultancy — supporting the sector with the tools and knowledge to thrive.",
-    img: "/media/show-agriculture.jpg",
-    alt: "Ordered plantation rows on red laterite earth in the Ugandan highlands",
-  },
-  {
-    n: "02",
-    title: "Environment & Green Energy",
-    body: "Environmental impact assessments, sustainability consulting, waste management and ecological restoration — reducing environmental footprint while restoring degraded ecosystems.",
-    img: "/media/show-environment.jpg",
-    alt: "A row of wind turbines following a hillside ridge",
-  },
-  {
-    n: "03",
-    title: "Business Solutions",
-    body: "Tailored, results-driven consulting that helps organizations unlock their full potential — strategy, organisation and partnerships that turn intent into delivered work.",
-    img: "/media/show-business.jpg",
-    alt: "An empty boardroom with a steel table and a city skyline beyond",
-  },
-];
+  { n: "01", key: "agriculture", img: "/media/show-agriculture.jpg", alt: "Ordered plantation rows on red laterite earth in the Ugandan highlands" },
+  { n: "02", key: "environment", img: "/media/show-environment.jpg", alt: "A row of wind turbines following a hillside ridge" },
+  { n: "03", key: "business", img: "/media/show-business.jpg", alt: "An empty boardroom with a steel table and a city skyline beyond" },
+] as const;
 
 /** Shared by the mobile stack and the desktop pinned column. */
 function Copy({ it }: { it: (typeof ITEMS)[number] }) {
+  const { t } = useI18n();
   return (
     <>
       <span className="t-mono block" style={{ color: "#6b6b6b" }}>
         {it.n} / {String(ITEMS.length).padStart(2, "0")}
       </span>
       <h2 className="t-h3 mt-4" style={{ color: "var(--title-light-bg)" }}>
-        {it.title}
+        {t.home.showcase[it.key].title}
       </h2>
       <p className="t-body mt-5 max-w-[46ch]" style={{ color: "#5a5a5a" }}>
-        {it.body}
+        {t.home.showcase[it.key].body}
       </p>
       <a
         href="#contact"

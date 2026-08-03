@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Blender preview stills — regenerate with scene/build_scene.py --preview
+scene/previews/

@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import LoaderPanel from "./LoaderPanel";
 
 /**
- * Every reference site opens with one of these. Breakthrough Energy holds a full-viewport
- * brand-colour flood with the mark centred; ON Energy counts in. This does both: a navy
- * flood, the ring mark drawing itself, a counter, then the whole panel lifts away to
- * hand off to the hero.
+ * The opening flood, on first paint only. Every reference site has one: a brand-colour
+ * panel, the mark drawing itself, a counter, then the whole thing lifts away to hand
+ * off to the hero.
+ *
+ * Navigations and language changes reuse the same panel through RouteTransition — this
+ * component owns the first load and nothing else.
  */
 export default function Preloader() {
   const [pct, setPct] = useState(0);
@@ -51,83 +54,5 @@ export default function Preloader() {
   }, []);
 
   if (gone) return null;
-
-  return (
-    <div
-      aria-hidden="true"
-      className="fixed inset-0 z-[999] grid place-items-center"
-      style={{
-        background: "var(--navy)",
-        transform: leaving ? "translateY(-100%)" : "none",
-        transition: "transform 900ms cubic-bezier(0.76, 0, 0.24, 1)",
-      }}
-    >
-      {/* soft gold rake so the panel belongs to the same world as the rest of the site */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(60% 90% at 22% 30%, rgba(255,222,89,.16), transparent 62%)",
-          filter: "blur(30px)",
-        }}
-      />
-
-      <div className="relative flex flex-col items-center">
-        <svg width="86" height="86" viewBox="0 0 86 86" className="mb-7">
-          <circle cx="43" cy="43" r="41" fill="none" stroke="rgba(255,255,255,.12)" strokeWidth="2" />
-          <circle
-            cx="43"
-            cy="43"
-            r="41"
-            fill="none"
-            stroke="var(--gold)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeDasharray={2 * Math.PI * 41}
-            strokeDashoffset={2 * Math.PI * 41 * (1 - pct / 100)}
-            transform="rotate(-90 43 43)"
-            style={{ transition: "stroke-dashoffset 120ms linear" }}
-          />
-          <text
-            x="43"
-            y="47"
-            textAnchor="middle"
-            fill="#fff"
-            style={{ font: "400 9px var(--font-geist-mono), monospace", letterSpacing: "0.1em" }}
-          >
-            NIL
-          </text>
-        </svg>
-
-        <div className="overflow-hidden">
-          <p
-            className="text-center"
-            style={{
-              fontWeight: 300,
-              fontSize: "clamp(1.4rem,3vw,2.4rem)",
-              letterSpacing: "-0.04em",
-              lineHeight: 1.05,
-              color: "#fff",
-              transform: leaving ? "translateY(-110%)" : "none",
-              transition: "transform 600ms cubic-bezier(0.76, 0, 0.24, 1)",
-            }}
-          >
-            Nomad Investments Limited
-          </p>
-        </div>
-
-        <span
-          className="mt-5 block"
-          style={{
-            fontFamily: "var(--font-geist-mono), monospace",
-            fontSize: "0.6875rem",
-            letterSpacing: "0.22em",
-            color: "rgba(255,255,255,.45)",
-          }}
-        >
-          {String(pct).padStart(3, "0")}
-        </span>
-      </div>
-    </div>
-  );
+  return <LoaderPanel pct={pct} leaving={leaving} />;
 }

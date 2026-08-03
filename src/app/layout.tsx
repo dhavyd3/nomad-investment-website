@@ -3,6 +3,10 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Nav from "@/components/Nav";
+import RouteTransition from "@/components/RouteTransition";
+import CursorTip from "@/components/CursorTip";
+import { I18nProvider } from "@/i18n/I18nProvider";
+import { getDictionary, getLocale } from "@/i18n/server";
 
 /* Univers Next Pro / SuisseIntl are licensed — Inter 300/400/500 is the closest free
    neo-grotesque, and at -0.04em tracking it reads very close to on.energy. */
@@ -35,15 +39,28 @@ export const viewport: Viewport = {
   themeColor: "#060644",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /* Resolved per request from the cookie (falling back to Accept-Language), so the
+     first paint is already in the visitor's language and `lang` is right for screen
+     readers and browser translation. */
+  const locale = await getLocale();
+  const dictionary = getDictionary(locale);
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={`${inter.variable} ${geistMono.variable}`}>
-        <SmoothScroll />
-        <Nav />
-        {children}
+        {/* RouteTransition wraps the provider because the language switcher inside it
+            needs to raise the loading panel before the refresh starts. */}
+        <RouteTransition>
+          <I18nProvider locale={locale} dictionary={dictionary}>
+            <SmoothScroll />
+            <Nav />
+            {children}
+            <CursorTip />
+          </I18nProvider>
+        </RouteTransition>
       </body>
     </html>
   );

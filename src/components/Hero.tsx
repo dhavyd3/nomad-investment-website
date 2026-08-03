@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useI18n } from "@/i18n/I18nProvider";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrollCue from "./ScrollCue";
 
-const WORDS = ["Strategize.", "Organize.", "Globalize."];
+
 
 /**
  * Breakthrough Energy's hero: one looping reel full-bleed, huge type over it. Scrolling
@@ -13,6 +14,8 @@ const WORDS = ["Strategize.", "Organize.", "Globalize."];
  * of frame, handing off to the next section underneath rather than cutting to it.
  */
 export default function Hero() {
+  const { t } = useI18n();
+  const WORDS = t.home.heroWords;
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLDivElement>(null);

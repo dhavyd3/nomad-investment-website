@@ -3,24 +3,22 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useI18n } from "@/i18n/I18nProvider";
 
 /**
  * ON Energy's pattern from brief image 3: rounded cards rising over a moving gold streak,
  * with the number set large and light and its unit small beside it.
  */
 const CARDS = [
-  { big: "7", unit: "lines", label: "Service disciplines under one operating standard" },
-  { big: "10", unit: "yrs", label: "Operating from Kampala since 2016" },
-  { big: "1", unit: "standard", label: "Same delivery discipline across every sector" },
-];
+  { big: "7", key: "lines" },
+  { big: "10", key: "years" },
+  { big: "1", key: "standard" },
+] as const;
 
-const REASONS = [
-  ["Integrity", "Core values of integrity, quality and innovation drive our operations and decision-making."],
-  ["Skilled workforce", "An experienced and skilled workforce, combined with dedication to continuous improvement."],
-  ["Getting it done", "We strategize, organize and globalize — synergies and partnerships that turn intent into delivery."],
-];
+const REASON_KEYS = ["integrity", "workforce", "done"] as const;
 
 export default function WhyChooseUs() {
+  const { t } = useI18n();
   const root = useRef<HTMLDivElement>(null);
   const streak = useRef<HTMLDivElement>(null);
 
@@ -86,13 +84,13 @@ export default function WhyChooseUs() {
       />
 
       <div className="wrap relative">
-        <span className="t-mono rise block">Why choose us</span>
-        <h2 className="t-h2 rise mt-6 max-w-[26ch]">Commitment to excellence, in every project we deliver.</h2>
+        <span className="t-mono rise block">{t.home.whyLabel}</span>
+        <h2 className="t-h2 rise mt-6 max-w-[26ch]">{t.home.whyHeading}</h2>
 
         <div className="mt-[clamp(44px,7vh,80px)] grid gap-4 md:grid-cols-3">
           {CARDS.map((c) => (
             <div
-              key={c.label}
+              key={c.key}
               className="stat-card rounded-[18px] border border-white/8 p-6 sm:p-7"
               style={{ background: "rgba(255,255,255,.035)" }}
             >
@@ -105,18 +103,20 @@ export default function WhyChooseUs() {
                 >
                   {c.big}
                 </span>
-                <span className="t-mono mt-2">{c.unit}</span>
+                <span className="t-mono mt-2">{t.home.stats[c.key].unit}</span>
               </div>
-              <p className="t-body mt-6">{c.label}</p>
+              <p className="t-body mt-6">{t.home.stats[c.key].label}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-[clamp(48px,8vh,96px)] grid gap-x-10 gap-y-10 md:grid-cols-3">
-          {REASONS.map(([t, b]) => (
-            <div key={t} className="rise border-t border-white/12 pt-6">
-              <h3 className="text-[1.0625rem] font-normal tracking-[-0.01em]">{t}</h3>
-              <p className="t-body mt-3">{b}</p>
+          {REASON_KEYS.map((k) => (
+            <div key={k} className="rise border-t border-white/12 pt-6">
+              <h3 className="text-[1.0625rem] font-normal tracking-[-0.01em]">
+                {t.home.points[k].title}
+              </h3>
+              <p className="t-body mt-3">{t.home.points[k].body}</p>
             </div>
           ))}
         </div>

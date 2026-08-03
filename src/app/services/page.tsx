@@ -1,64 +1,71 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ServicesHero from "@/components/ServicesHero";
 import ServicesScroll from "@/components/ServicesScroll";
 import { ZONES } from "@/components/servicesZones";
 import { RevealWords, RevealChars } from "@/components/Reveal";
 import SiteFooter from "@/components/SiteFooter";
+import { getDictionary, getLocale } from "@/i18n/server";
 
 export const metadata: Metadata = {
   title: "Our Services — Nomad Investments Limited",
   description:
-    "Five service lines across one operating standard: business consulting and investor relations, ICT and cybersecurity, engineering and infrastructure, agriculture, and oil, gas and green energy.",
+    "Business consulting and investor relations, ICT and cybersecurity, engineering and infrastructure, agriculture, and oil, gas and green energy — delivered from one operating standard in Kampala.",
 };
 
-/* on.energy's expertise page runs: a dark problem statement, the pinned scene, an
-   expertise intro, feature cards, a body of copy, a quote, then the close. Same order
-   here, in Nomad's voice. */
-const CARDS = [
-  ["Scoped honestly", "We say what a job actually takes before it starts, including when the answer is that we are not the right firm for it."],
-  ["Delivered by us", "The people who scope the work are the people who carry it. Nothing is handed to a subcontractor you never met."],
-  ["Held to one standard", "Five disciplines, one delivery discipline. A client in agriculture gets the same rigour as one in cybersecurity."],
-];
-
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const t = getDictionary(await getLocale());
+  const EXPERTISE_KEYS = ["guidance", "delivery", "standard", "workforce"] as const;
   return (
     <>
       <main>
-        <section className="wrap svc-intro" data-nav-theme="dark">
-          <span className="t-mono block">Our services</span>
-          <RevealWords
-            as="h1"
-            className="t-h1 mt-7 max-w-[16ch]"
-            text="Five service lines. One way of working."
-          />
+        <ServicesHero />
+
+        {/* The bridge. One large, quiet statement between the hero and the board —
+            the job the reference's "The Problem" section does: it slows the reader
+            down so the pinned scene arrives as an answer rather than a surprise. */}
+        {/* The bridge opens the white slab with a rounded top over the dark hero, and
+            the cap below closes it again after the board. Between them the background
+            never changes, so the two dark/light joins are curves rather than seams. */}
+        <section className="svc-bridge wrap" data-nav-theme="light">
+          <div className="svc-bridge-label">
+            <span className="t-mono">{t.services.problemLabel}</span>
+          </div>
           <RevealChars
-            className="t-lead mt-9 max-w-[52ch]"
-            text="Most firms sell a service. We take on the delivery — across five major lines of work, from a single operating standard in Kampala."
+            className="svc-bridge-copy"
+            text={t.services.problemBody}
           />
         </section>
 
         <ServicesScroll />
 
-        <section className="wrap svc-after" data-nav-theme="dark">
-          <RevealWords as="h2" className="t-h2 max-w-[22ch]" text="How the work actually runs" />
-          <div className="svc-cards">
-            {CARDS.map(([t, b]) => (
-              <div key={t} className="svc-card">
-                <h3>{t}</h3>
-                <RevealChars className="t-body mt-3" text={b} />
+        <div className="svc-cap" aria-hidden="true" />
+
+        <section className="wrap svc-expertise" data-nav-theme="dark">
+          <span className="t-mono block">{t.services.expertiseLabel}</span>
+          <RevealWords
+            as="h2"
+            className="t-h2 mt-7 max-w-[22ch]"
+            text={t.services.expertiseTitle}
+          />
+          <div className="svc-expertise-grid">
+            {EXPERTISE_KEYS.map((k) => (
+              <div key={k} className="svc-expertise-item">
+                <h3>{t.services.expertise[k].title}</h3>
+                <RevealChars className="t-body mt-3" text={t.services.expertise[k].body} />
               </div>
             ))}
           </div>
         </section>
 
         <section className="wrap svc-list" data-nav-theme="dark">
-          <RevealWords as="h2" className="t-h2 max-w-[20ch]" text="The five lines in full" />
+          <RevealWords as="h2" className="t-h2 max-w-[20ch]" text={t.services.listTitle} />
           <ol>
             {ZONES.map((z) => (
               <li key={z.id}>
                 <span className="t-mono">{z.index}</span>
                 <div>
-                  <h3>{z.title}</h3>
+                  <h3>{t.services.lines[z.id as keyof typeof t.services.lines] ?? z.title}</h3>
                   <p className="t-body mt-2">{z.body}</p>
                 </div>
               </li>
@@ -67,12 +74,12 @@ export default function ServicesPage() {
         </section>
 
         <section className="wrap svc-cta" data-nav-theme="dark">
-          <RevealWords as="h2" className="t-h2 max-w-[18ch]" text="Tell us what needs delivering." />
+          <RevealWords as="h2" className="t-h2 max-w-[18ch]" text={t.services.ctaTitle} />
           <p className="t-body mt-6 max-w-[46ch]">
-            Send the brief and the discipline it sits in. We will come back to you from Kampala.
+            {t.services.ctaBody}
           </p>
           <Link href="/contact" className="btn btn-gold mt-9">
-            Get in touch <span className="arrow">→</span>
+            {t.nav.cta} <span className="arrow">→</span>
           </Link>
         </section>
       </main>

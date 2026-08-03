@@ -1,21 +1,91 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import ServicesScene, { useActiveZone } from "./ServicesScene";
+import { useEffect, useRef, useState } from "react";
+import ServicesStage, { STOPS, activeZone, progressForStop } from "./ServicesStage";
 import { ZONES } from "./servicesZones";
+import { useI18n } from "@/i18n/I18nProvider";
 
 /**
- * The pinned half of the services page. The section is tall; the stage inside it sticks,
- * and scroll position picks the zone the camera flies to. Panels are keyed on the zone so
- * each one re-enters rather than cross-fading its text in place.
+ * The pinned half of the services page. The section is very tall, the stage inside
+ * it sticks, and scroll position flies the camera between the five service zones.
+ *
+ * Four viewports per stop, matching the reference's 24 for six stops. The old board
+ * gave each zone barely one, so the camera move and the reading of the copy were
+ * always competing; at this length the camera arrives, settles, and waits.
+ *
+ * Progress goes to the stage through a ref, not a prop — a 24-viewport scroll would
+ * otherwise re-render the tree on every frame. Only the discrete zone index is
+ * state, and that changes five times in the whole section.
  */
+const VIEWPORTS_PER_STOP = 4;
+
+function Tick() {
+  return (
+    <svg className="svc-tick" viewBox="0 0 14 14" aria-hidden="true">
+      <circle cx="7" cy="7" r="6.2" fill="currentColor" />
+      <path
+        d="M4.2 7.2l2 2 3.6-4"
+        fill="none"
+        stroke="var(--tick-mark, #fff)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function ServicesScroll() {
+  const { t } = useI18n();
   const root = useRef<HTMLElement>(null);
-  const active = useActiveZone(root);
+  const veil = useRef<HTMLDivElement>(null);
+  const progress = useRef(0);
+  const [active, setActive] = useState(-1);
   const zone = active >= 0 ? ZONES[active] : null;
 
-  /* The zones are scroll offsets inside a pinned section, not anchors, so /services#ict
-     has to be converted into a scroll position by hand. */
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+
+    let raf = 0;
+    const read = () => {
+      raf = 0;
+      const scrollable = el.offsetHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      const p = Math.min(Math.max(-el.getBoundingClientRect().top / scrollable, 0), 1);
+      progress.current = p;
+
+      /* The reference fades the whole stage to black on the way in and out rather
+         than hard-cutting to the neighbouring sections. Written straight onto the
+         node so it costs nothing per frame. */
+      const v = veil.current;
+      if (v) {
+        const edge = 0.045;
+        const o = p < edge ? 1 - p / edge : p > 1 - edge ? 1 - (1 - p) / edge : 0;
+        v.style.opacity = String(o);
+      }
+
+      setActive((prev) => {
+        const next = activeZone(p);
+        return next === prev ? prev : next;
+      });
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(read);
+    };
+    read();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  /* The zones are scroll offsets inside a pinned section, not anchors, so
+     /services#ict has to be converted into a scroll position by hand. */
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -26,12 +96,10 @@ export default function ServicesScroll() {
     const jump = () => {
       const scrollable = el.offsetHeight - window.innerHeight;
       if (scrollable <= 0) return;
-      const lead = 0.07;
-      // aim at the middle of the zone's band so it is unambiguously the active one
-      const p = lead + ((i + 0.5) / ZONES.length) * (1 - lead);
+      // stop i+1 of STOPS, since index 0 is the establishing shot
+      const p = progressForStop(i + 1);
       window.scrollTo({ top: el.offsetTop + scrollable * p, behavior: "instant" });
     };
-    // after layout settles, or the offsets are measured against a half-built page
     const t = window.setTimeout(jump, 60);
     return () => window.clearTimeout(t);
   }, []);
@@ -40,28 +108,31 @@ export default function ServicesScroll() {
     <section
       ref={root}
       id="scene"
-      data-nav-theme="dark"
+      data-nav-theme="light"
       className="svc-section"
-      style={{ height: `${(ZONES.length + 1) * 100}vh` }}
+      style={{ height: `${STOPS.length * VIEWPORTS_PER_STOP * 100}vh` }}
     >
       <div className="svc-sticky stage">
-        <ServicesScene active={active} />
+        <ServicesStage progress={progress} active={active} />
         <div aria-hidden="true" className="svc-veil" />
+        <div ref={veil} aria-hidden="true" className="svc-fade" />
 
         {!zone && (
           <div className="svc-hint">
-            <span className="t-mono">Five disciplines, one board</span>
-            <p className="t-h3">Scroll to move across the operation.</p>
+            <span className="t-mono">{t.services.hintLabel}</span>
+            <p className="t-h3">{t.services.hintBody}</p>
           </div>
         )}
 
+        {/* One card. It sits on the white board, so it is navy rather than gold —
+            gold on paper read as an orange slab and pulled away from the palette. */}
         {zone && (
           <article key={zone.id} className="svc-panel">
-            <span className="t-mono svc-panel-n">
-              {zone.index} / {String(ZONES.length).padStart(2, "0")}
+            <span className="svc-eyebrow">
+              <Tick /> {t.services.sector} {zone.index}
             </span>
-            <h2 className="t-h3 mt-4">{zone.title}</h2>
-            <p className="t-body mt-5">{zone.body}</p>
+            <h2>{t.services.lines[zone.id as keyof typeof t.services.lines] ?? zone.title}</h2>
+            <p>{zone.body}</p>
           </article>
         )}
 

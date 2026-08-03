@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/i18n/I18nProvider";
 
 /**
  * Video 2 scrubbed by scroll. Each of the five segments carries one service line, and its
@@ -11,37 +12,18 @@ import { useEffect, useRef, useState } from "react";
  * actually lands — otherwise "Agriculture" appears over an excavator.
  */
 const CHAPTERS = [
-  {
-    at: 0.0,
-    title: "Business Consulting\n& Investor Relations",
-    body: "Our business consulting division provides tailored, results-driven solutions to help organizations unlock their full potential.",
-  },
-  {
-    at: 0.28,
-    title: "ICT Consultancy, AI\n& Cybersecurity",
-    body: "Exceptional ICT consultancy and cybersecurity services tailored to the unique needs of your business — from IT strategy and system integration to penetration testing and incident response.",
-  },
-  {
-    at: 0.48,
-    title: "Engineering\n& Infrastructure",
-    body: "Our commitment to quality, innovation and sustainability ensures that we meet the unique needs of our clients across construction and infrastructure delivery.",
-  },
-  {
-    at: 0.7,
-    title: "Agricultural Services\n& Consultancy",
-    body: "With our team of experts we provide comprehensive agricultural services and consulting — improving agricultural infrastructure and productivity through innovative solutions.",
-  },
-  {
-    at: 0.88,
-    title: "Oil, Gas\n& Green Energy",
-    body: "With extensive expertise we help clients navigate the complexities of the oil and gas sector, alongside environmental assessment and green energy advisory.",
-  },
-];
+  { at: 0.0, key: "business" },
+  { at: 0.28, key: "ict" },
+  { at: 0.48, key: "engineering" },
+  { at: 0.7, key: "agriculture" },
+  { at: 0.88, key: "energy" },
+] as const;
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export default function ServiceScroll() {
+  const { t } = useI18n();
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [idx, setIdx] = useState(0);
@@ -143,10 +125,10 @@ export default function ServiceScroll() {
         <div className="wrap absolute inset-0 flex flex-col justify-center pb-10 pt-[104px] md:py-0">
           <div key={idx} className="service-copy max-w-full md:max-w-[min(560px,48vw)]">
             <h2 className="t-h2 whitespace-pre-line" style={{ color: "#fff" }}>
-              {ch.title}
+              {t.home.scroll[ch.key].title}
             </h2>
             <p className="t-body mt-4 sm:mt-5" style={{ color: "rgba(255,255,255,.74)" }}>
-              {ch.body}
+              {t.home.scroll[ch.key].body}
             </p>
           </div>
         </div>

@@ -4,24 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Brandmark from "@/components/Brandmark";
+import { useI18n } from "@/i18n/I18nProvider";
+import { LOCALES, LOCALE_LABELS, type Locale } from "@/i18n/config";
 
 /* Ids match the zones on the services board, so a pick lands the camera on that zone
    rather than dropping everyone at the top of the page. */
-const SERVICES = [
-  { label: "Business Consulting & Investor Relations", id: "business" },
-  { label: "ICT Consultancy, AI & Cybersecurity", id: "ict" },
-  { label: "Engineering & Infrastructure", id: "engineering" },
-  { label: "Agricultural Services & Consultancy", id: "agriculture" },
-  { label: "Oil, Gas & Green Energy", id: "energy" },
-];
-
-const LINKS = [
-  { label: "About Us", href: "/about" },
-  { label: "Our Services", href: "/services", menu: SERVICES },
-  { label: "Contact Us", href: "/contact" },
-];
-
-const LANGS = ["EN", "FR", "SW", "LG"];
+/* Ids only — every label on this bar comes from the dictionary, so switching the
+   language re-labels the nav along with the rest of the page. */
+const SERVICE_IDS = ["business", "ict", "engineering", "agriculture", "energy"] as const;
 
 function Label({ label }: { label: string }) {
   return <span className="nav-link-label">{label}</span>;
@@ -45,7 +35,7 @@ function scrollTo(top: number) {
 
 
 export default function Nav() {
-  const [lang, setLang] = useState("EN");
+  const { locale, t, setLocale } = useI18n();
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
   const [sub, setSub] = useState(false);
@@ -54,6 +44,13 @@ export default function Nav() {
   const box = useRef<HTMLDivElement>(null);
   const leave = useRef(0);
   const router = useRouter();
+
+  const SERVICES = SERVICE_IDS.map((id) => ({ id, label: t.services.lines[id] }));
+  const LINKS = [
+    { label: t.nav.about, href: "/about" },
+    { label: t.nav.services, href: "/services", menu: SERVICES },
+    { label: t.nav.contact, href: "/contact" },
+  ];
 
   useEffect(() => {
     const away = (e: MouseEvent) => {
@@ -239,11 +236,12 @@ export default function Nav() {
           <button
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label="Select language"
+            aria-label={t.nav.selectLanguage}
+            data-tip={t.nav.selectLanguage}
             className="nav-chip flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[12px] tracking-[0.08em]"
             style={{ fontFamily: "var(--font-geist-mono)" }}
           >
-            {lang}
+            {LOCALE_LABELS[locale].short}
             <svg width="8" height="5" viewBox="0 0 8 5" aria-hidden="true"
               style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform .3s var(--ease)" }}>
               <path d="M0 0l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.2" />
@@ -254,15 +252,17 @@ export default function Nav() {
               className="nav-pill absolute right-0 top-[calc(100%+8px)] w-[86px] list-none overflow-hidden p-1"
               style={{ animation: "none" }}
             >
-              {LANGS.map((c) => (
+              {LOCALES.map((c: Locale) => (
                 <li key={c}>
                   <button
-                    onClick={() => { setLang(c); setOpen(false); }}
-                    data-current={c === lang ? "true" : undefined}
+                    onClick={() => { setLocale(c); setOpen(false); }}
+                    data-current={c === locale ? "true" : undefined}
+                    data-tip={t.languages[c]}
+                    lang={c}
                     className="nav-opt block w-full rounded px-3 py-2 text-left text-[12px] tracking-[0.08em]"
                     style={{ fontFamily: "var(--font-geist-mono)" }}
                   >
-                    {c}
+                    {LOCALE_LABELS[c].short}
                   </button>
                 </li>
               ))}
@@ -271,7 +271,7 @@ export default function Nav() {
         </div>
 
         <Link href="/contact" className="btn btn-gold hidden lg:inline-flex">
-          Get in touch <span className="arrow">→</span>
+          {t.nav.cta} <span className="arrow">→</span>
         </Link>
 
         {/* on.energy separates the mark from the toggle with a hairline */}
@@ -281,7 +281,7 @@ export default function Nav() {
         <button
           onClick={() => (menu ? closeMenu() : setMenu(true))}
           aria-expanded={menu}
-          aria-label={menu ? "Close menu" : "Menu"}
+          aria-label={menu ? t.nav.close : t.nav.menu}
           className="nav-chip ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-md border lg:hidden"
         >
           <span className="relative block h-[10px] w-[18px]">
@@ -370,17 +370,19 @@ export default function Nav() {
           {/* pinned to the bottom of the sheet, as on the reference */}
           <div className="nav-sheet-foot">
             <div className="flex items-center gap-1">
-              {LANGS.map((c) => (
+              {LOCALES.map((c: Locale) => (
                 <button
                   key={c}
-                  onClick={() => setLang(c)}
-                  aria-pressed={c === lang}
+                  onClick={() => { setLocale(c); closeMenu(); }}
+                  aria-pressed={c === locale}
+                  data-tip={t.languages[c]}
+                  lang={c}
                   className={`rounded px-3 py-2 text-[12px] tracking-[0.08em] ${
-                    c === lang ? "text-[var(--gold)]" : "text-white/60"
+                    c === locale ? "text-[var(--gold)]" : "text-white/60"
                   }`}
                   style={{ fontFamily: "var(--font-geist-mono)" }}
                 >
-                  {c}
+                  {LOCALE_LABELS[c].short}
                 </button>
               ))}
             </div>
@@ -389,7 +391,7 @@ export default function Nav() {
               onClick={closeMenu}
               className="btn btn-gold mt-3 w-full justify-center"
             >
-              Get in touch <span className="arrow">→</span>
+              {t.nav.cta} <span className="arrow">→</span>
             </Link>
           </div>
         </div>
