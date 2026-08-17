@@ -2,17 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Lockup from "./Lockup";
 
-/* The NIL roundel and wordmark appear in the nav bar and in both footers. Wherever it
+/* The roundel and wordmark appear in the nav bar and in both footers. Wherever it
    shows up it is the way back to the homepage, so the markup lives here once rather than
    being re-typed — and re-linked — at each site. */
 
-/* The three placements differ only in scale: the nav lets the wordmark grow a point past
-   the small breakpoint, the homepage footer sits a size down from the nav. */
+/* The lockup carries INVESTMENTS / LIMITED inside the arcs, so the typed wordmark that used
+   to sit beside it would only repeat itself and is gone.
+
+   These sizes are set by what the inner lines need. They are 4.8% of the mark's height, so
+   at the old 44 they came out 2.12px and smeared; 104 puts them at 5.0px. NOMAD is the name
+   the mark is carrying, so it is given the room to read. Below about 80 use Roundel instead
+   — it drops the words rather than showing mush.
+
+   A pixel number rather than a Tailwind height or width class: Tailwind is not emitting
+   .h-9, .h-10, .h-11 or .w-10 in this project, and an svg has no intrinsic height to fall
+   back on, so a missing class let it stretch to fill its parent. */
 const SIZES = {
-  nav: { mark: "h-9 w-9 text-[7px]", word: "text-[12px] sm:text-[13px]" },
-  footer: { mark: "h-9 w-9 text-[7px]", word: "text-[12px]" },
-  compact: { mark: "h-8 w-8 text-[6px]", word: "text-[12px]" },
+  nav: { mark: 104 },
+  footer: { mark: 112 },
+  compact: { mark: 104 },
 };
 
 export default function Brandmark({
@@ -48,17 +58,7 @@ export default function Brandmark({
       aria-label="Nomad Investments Limited — home"
       className={`flex shrink-0 items-center gap-3 no-underline ${className}`}
     >
-      <span
-        className={`grid place-items-center rounded-full border-2 tracking-[0.08em] ${s.mark}`}
-        style={{ borderColor: "var(--gold)", fontFamily: "var(--font-geist-mono)" }}
-      >
-        NIL
-      </span>
-      <span className={`font-medium leading-[1.15] tracking-[0.02em] ${s.word}`}>
-        NOMAD INVESTMENTS
-        <br />
-        LIMITED
-      </span>
+      <Lockup size={s.mark} className="shrink-0" />
     </Link>
   );
 }

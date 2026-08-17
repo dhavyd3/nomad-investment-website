@@ -10,6 +10,10 @@
   --navy: #060644;
   --navy-deep: #04042e;
   --gold: #ffde59;
+  /* Same hue as --gold, darkened until it reads on --paper: the brand gold sits at
+     1.20:1 there, which is invisible. This clears 3:1 (WCAG non-text) at 3.19:1 and
+     still reads as gold, so the roundel keeps both its colours over light sections. */
+  --gold-deep: #a68500;
 
   /* the title / explanation colour split the brief called out */
   --title-dark-bg: #eeeeee;
@@ -326,8 +330,8 @@ section { position: relative; }
   background: rgba(255, 255, 255, 0.62);
   border-color: rgba(6, 6, 68, 0.1);
 }
-.nav-root { --nav-fg: #fff; --nav-accent: var(--gold); }
-.nav-root[data-light] { --nav-fg: var(--navy); --nav-accent: var(--navy); }
+.nav-root { --nav-fg: #fff; --nav-accent: var(--gold); --brand-arc: var(--gold); }
+.nav-root[data-light] { --nav-fg: var(--navy); --nav-accent: var(--navy); --brand-arc: var(--gold-deep); }
 .nav-root a,
 .nav-root .nav-link,
 .nav-root button { color: var(--nav-fg); }
