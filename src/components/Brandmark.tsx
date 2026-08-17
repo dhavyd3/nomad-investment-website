@@ -2,17 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Roundel from "./Roundel";
 
-/* The NIL roundel and wordmark appear in the nav bar and in both footers. Wherever it
+/* The roundel and wordmark appear in the nav bar and in both footers. Wherever it
    shows up it is the way back to the homepage, so the markup lives here once rather than
    being re-typed — and re-linked — at each site. */
 
 /* The three placements differ only in scale: the nav lets the wordmark grow a point past
-   the small breakpoint, the homepage footer sits a size down from the nav. */
+   the small breakpoint, the homepage footer sits a size down from the nav.
+
+   The mark runs a size above the wordmark it sits with. The roundel is two thin arcs, and
+   at the old h-9 they came out 2.27px and 1.50px — a hairline that disappeared against the
+   bar. h-11 carries them to roughly 3.4px and 2.5px. */
 const SIZES = {
-  nav: { mark: "h-9 w-9 text-[7px]", word: "text-[12px] sm:text-[13px]" },
-  footer: { mark: "h-9 w-9 text-[7px]", word: "text-[12px]" },
-  compact: { mark: "h-8 w-8 text-[6px]", word: "text-[12px]" },
+  nav: { mark: "h-11 w-11", word: "text-[12px] sm:text-[13px]" },
+  footer: { mark: "h-11 w-11", word: "text-[12px]" },
+  compact: { mark: "h-10 w-10", word: "text-[12px]" },
 };
 
 export default function Brandmark({
@@ -48,12 +53,7 @@ export default function Brandmark({
       aria-label="Nomad Investments Limited — home"
       className={`flex shrink-0 items-center gap-3 no-underline ${className}`}
     >
-      <span
-        className={`grid place-items-center rounded-full border-2 tracking-[0.08em] ${s.mark}`}
-        style={{ borderColor: "var(--gold)", fontFamily: "var(--font-geist-mono)" }}
-      >
-        NIL
-      </span>
+      <Roundel className={`shrink-0 ${s.mark}`} />
       <span className={`font-medium leading-[1.15] tracking-[0.02em] ${s.word}`}>
         NOMAD INVESTMENTS
         <br />
