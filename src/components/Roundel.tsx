@@ -13,9 +13,21 @@
    Hardcoding the artwork's own navy would put it at 1.07:1 on --ink, which is invisible
    — the same trap the wordmark hit at 1.04:1 before it was moved onto --nav-fg. */
 
-export default function Roundel({ className = "" }: { className?: string }) {
+export default function Roundel({
+  size,
+  className = "",
+}: {
+  size: number;
+  className?: string;
+}) {
   return (
     <svg
+      /* Sized by attribute rather than by a Tailwind height or width class. Tailwind is
+         not emitting .h-9, .h-10, .h-11 or .w-10 in this project, and an svg has no
+         intrinsic height to fall back on — with both classes missing it stretched to
+         fill its parent and came out 309px in the footer. */
+      width={size}
+      height={size}
       viewBox="0 0 274.00 274.00"
       className={className}
       /* the link that wraps this already carries the accessible name */

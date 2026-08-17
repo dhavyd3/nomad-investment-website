@@ -11,13 +11,17 @@ import Roundel from "./Roundel";
 /* The three placements differ only in scale: the nav lets the wordmark grow a point past
    the small breakpoint, the homepage footer sits a size down from the nav.
 
-   The mark runs a size above the wordmark it sits with. The roundel is two thin arcs, and
-   at the old h-9 they came out 2.27px and 1.50px — a hairline that disappeared against the
-   bar. h-11 carries them to roughly 3.4px and 2.5px. */
+   The mark is a pixel number rather than a Tailwind height or width class. Tailwind is not
+   emitting .h-9, .h-10, .h-11 or .w-10 in this project — the old NIL span hid that, because
+   text gave it a height regardless, but an svg has none and stretched to fill its parent.
+
+   44 rather than the span's old 36: the roundel is two thin arcs, and at 36 they came out
+   2.27px and 1.50px, a hairline that disappeared against the bar. At 44 they land near
+   3.4px and 2.5px. */
 const SIZES = {
-  nav: { mark: "h-11 w-11", word: "text-[12px] sm:text-[13px]" },
-  footer: { mark: "h-11 w-11", word: "text-[12px]" },
-  compact: { mark: "h-10 w-10", word: "text-[12px]" },
+  nav: { mark: 44, word: "text-[12px] sm:text-[13px]" },
+  footer: { mark: 44, word: "text-[12px]" },
+  compact: { mark: 40, word: "text-[12px]" },
 };
 
 export default function Brandmark({
@@ -53,7 +57,7 @@ export default function Brandmark({
       aria-label="Nomad Investments Limited — home"
       className={`flex shrink-0 items-center gap-3 no-underline ${className}`}
     >
-      <Roundel className={`shrink-0 ${s.mark}`} />
+      <Roundel size={s.mark} className="shrink-0" />
       <span className={`font-medium leading-[1.15] tracking-[0.02em] ${s.word}`}>
         NOMAD INVESTMENTS
         <br />
