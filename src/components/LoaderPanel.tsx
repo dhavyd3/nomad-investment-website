@@ -4,7 +4,13 @@
  * Pulled out of Preloader so the first load, a page navigation and a language change
  * all show the same thing — three different triggers, one piece of choreography.
  */
-const R = 41;
+import Lockup from "./Lockup";
+
+/* The ring holds the mark now, so it is sized around it rather than around the three
+   letters it used to hold: 96 for the mark, a 24px moat, then the ring at r=72. */
+const DIAL = 150;
+const MARK = 96;
+const R = 72;
 const CIRCUMFERENCE = 2 * Math.PI * R;
 
 export default function LoaderPanel({
@@ -27,31 +33,53 @@ export default function LoaderPanel({
       />
 
       <div className="relative flex flex-col items-center">
-        <svg width="86" height="86" viewBox="0 0 86 86" className="mb-7">
-          <circle cx="43" cy="43" r={R} fill="none" stroke="rgba(255,255,255,.12)" strokeWidth="2" />
-          <circle
-            cx="43"
-            cy="43"
-            r={R}
-            fill="none"
-            stroke="var(--gold)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={CIRCUMFERENCE * (1 - pct / 100)}
-            transform="rotate(-90 43 43)"
-            style={{ transition: "stroke-dashoffset 120ms linear" }}
-          />
-          <text
-            x="43"
-            y="47"
-            textAnchor="middle"
-            fill="#fff"
-            style={{ font: "400 9px var(--font-geist-mono), monospace", letterSpacing: "0.1em" }}
+        {/* Laid out inline rather than with utility classes. Tailwind is dropping a
+            number of them in this project — .h-9, .w-10, .lg:flex among others — and a
+            missing rule here would put the ring somewhere other than around the mark. */}
+        <div
+          className="mb-7"
+          style={{
+            position: "relative",
+            width: DIAL,
+            height: DIAL,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            /* the mark's arcs and words ride on currentColor */
+            color: "#fff",
+          }}
+        >
+          <svg
+            width={DIAL}
+            height={DIAL}
+            viewBox={`0 0 ${DIAL} ${DIAL}`}
+            style={{ position: "absolute", top: 0, left: 0 }}
           >
-            NIL
-          </text>
-        </svg>
+            <circle
+              cx={DIAL / 2}
+              cy={DIAL / 2}
+              r={R}
+              fill="none"
+              stroke="rgba(255,255,255,.12)"
+              strokeWidth="2"
+            />
+            <circle
+              cx={DIAL / 2}
+              cy={DIAL / 2}
+              r={R}
+              fill="none"
+              stroke="var(--gold)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeDasharray={CIRCUMFERENCE}
+              strokeDashoffset={CIRCUMFERENCE * (1 - pct / 100)}
+              transform={`rotate(-90 ${DIAL / 2} ${DIAL / 2})`}
+              style={{ transition: "stroke-dashoffset 120ms linear" }}
+            />
+          </svg>
+
+          <Lockup size={MARK} />
+        </div>
 
         <div className="overflow-hidden">
           <p className="loader-word">Nomad Investments Limited</p>
