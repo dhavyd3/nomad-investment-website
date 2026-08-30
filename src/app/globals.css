@@ -1119,6 +1119,39 @@ section { position: relative; }
 }
 
 /* --- sections after the board --- */
+/* ---------- cleaning division ----------
+   Its own section rather than a sixth board zone: the board's five zones are baked
+   into nomad-scene.glb with a camera stop each, and this is a specialist division
+   with a benefits list that would not fit a zone card anyway. */
+.svc-division { padding-block: clamp(76px, 12vh, 150px); }
+.svc-division > .t-mono { color: var(--gold); }
+
+/* The live-equipment note is the one claim a technical reader stops on, so it is
+   pulled out of the run of body copy with a gold rule rather than left in it. */
+.svc-division-note {
+  margin-top: clamp(36px, 5vh, 60px);
+  border-left: 2px solid var(--gold);
+  padding-left: clamp(16px, 2vw, 26px);
+  max-width: 58ch;
+}
+.svc-division-note p { color: var(--title-dark-bg); }
+
+.svc-division-grid {
+  display: grid;
+  gap: clamp(28px, 3vw, 44px);
+  margin-top: clamp(28px, 4vh, 44px);
+}
+@media (min-width: 700px) { .svc-division-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1080px) { .svc-division-grid { grid-template-columns: repeat(4, 1fr); } }
+.svc-division-item { border-top: 1px solid rgba(255, 255, 255, 0.16); padding-top: 1.2rem; }
+.svc-division-item h3 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1.0625rem;
+  letter-spacing: -0.02em;
+  color: var(--title-dark-bg);
+}
+
 .svc-list, .svc-cta { padding-block: clamp(76px, 12vh, 150px); }
 
 .svc-list ol { margin: clamp(40px, 6vh, 72px) 0 0; padding: 0; list-style: none; }

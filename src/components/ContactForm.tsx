@@ -8,7 +8,7 @@ import en from "@/i18n/dictionaries/en";
 const DISCIPLINE_KEYS = [
   "businessConsulting", "investorRelations", "ictConsultancy", "cybersecurity",
   "transport", "clearing", "financial", "construction", "medical", "oilGas",
-  "environment",
+  "environment", "cleaning",
 ] as const;
 
 export default function ContactForm() {

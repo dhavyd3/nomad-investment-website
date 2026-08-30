@@ -24,6 +24,7 @@ const zh: Dictionary = {
       engineering: "工程与基础设施",
       agriculture: "农业服务与咨询",
       energy: "石油、天然气与绿色能源",
+      cleaning: "电气与机械清洗解决方案",
     },
     heroTitle: "我们的服务",
     heroBody:
@@ -58,6 +59,37 @@ const zh: Dictionary = {
     listTitle: "完整业务领域",
     ctaTitle: "告诉我们需要交付什么。",
     ctaBody: "把需求和所属专业发给我们，我们会从坎帕拉回复您。",
+    division: {
+      label: "专业事业部",
+      title: "NOMAD Electric and Machine Cleaning Solutions",
+      body:
+        "Nomad Investments Limited 旗下的专业服务事业部，为机械、设备及工业设施提供专业电气服务与全面清洗解决方案。",
+      focus:
+        "该事业部承担电气、机械及设备清洗、预防性维护、除油和一般工业清洁——旨在提升设备性能、延长机器寿命、改善作业安全并减少停机时间。",
+      detergentLabel: "带电清洗",
+      detergentBody:
+        "我们使用专业的非导电绝缘清洗剂，可在不断电的情况下清洗带电运行的电气和电子设备。",
+      benefitsLabel: "核心优势",
+      benefits: {
+        nonConductive: {
+          title: "非导电",
+          body: "防止电火花，可在通电系统上安全清洗，并满足高压规格要求。",
+        },
+        quickDrying: {
+          title: "快干无残留",
+          body: "采用可自然挥发的有机化合物配方，令设备内部彻底洁净。",
+        },
+        nonCorrosive: {
+          title: "无腐蚀性",
+          body: "防止氧化，避免损伤精密电子元件、印刷电路板（PCB）和金属表面。",
+        },
+        fireSafe: {
+          title: "防火安全",
+          body: "燃点高，可降低施工过程中的火灾风险。",
+        },
+      },
+    },
+
   },
 
   contact: {
@@ -112,6 +144,7 @@ const zh: Dictionary = {
     medical: "医疗物资与健康信息化",
     oilGas: "石油与天然气咨询",
     environment: "环境与绿色能源",
+    cleaning: "电气与机械清洗",
   },
 
   home: {

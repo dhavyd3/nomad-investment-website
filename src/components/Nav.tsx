@@ -11,7 +11,9 @@ import { LOCALES, LOCALE_LABELS, type Locale } from "@/i18n/config";
    rather than dropping everyone at the top of the page. */
 /* Ids only — every label on this bar comes from the dictionary, so switching the
    language re-labels the nav along with the rest of the page. */
-const SERVICE_IDS = ["business", "ict", "engineering", "agriculture", "energy"] as const;
+/* "cleaning" is deliberately not a board zone — it has no camera stop in the GLB.
+   /services#cleaning anchors to the division section instead. */
+const SERVICE_IDS = ["business", "ict", "engineering", "agriculture", "energy", "cleaning"] as const;
 
 function Label({ label }: { label: string }) {
   return <span className="nav-link-label">{label}</span>;

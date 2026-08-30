@@ -21,6 +21,7 @@ const sw: Dictionary = {
       engineering: "Uhandisi na Miundombinu",
       agriculture: "Huduma na Ushauri wa Kilimo",
       energy: "Mafuta, Gesi na Nishati Safi",
+      cleaning: "Suluhisho za Usafishaji wa Umeme na Mitambo",
     },
     heroTitle: "Huduma Zetu",
     heroBody:
@@ -56,6 +57,37 @@ const sw: Dictionary = {
     ctaTitle: "Tuambie kinachohitajika kutekelezwa.",
     ctaBody:
       "Tutumie maelezo ya mradi na taaluma inayohusika. Tutakujibu kutoka Kampala.",
+    division: {
+      label: "Kitengo maalum",
+      title: "NOMAD Electric and Machine Cleaning Solutions",
+      body:
+        "Kitengo maalum cha huduma cha Nomad Investments Limited, kinachotoa huduma za kitaalamu za umeme na suluhisho kamili za usafishaji wa mitambo, vifaa na maeneo ya viwanda.",
+      focus:
+        "Kitengo hiki hushughulikia usafishaji wa umeme, mitambo na vifaa, matengenezo ya kinga, uondoaji wa mafuta na usafi wa jumla wa viwanda — kazi iliyoundwa kuboresha utendaji wa vifaa, kuongeza muda wa matumizi ya mitambo, kuimarisha usalama mahali pa kazi na kupunguza muda wa kusimama kwa uzalishaji.",
+      detergentLabel: "Kusafisha vifaa vikiwa vimewashwa",
+      detergentBody:
+        "Tunatumia sabuni maalum isiyopitisha umeme na yenye kuzuia umeme, iliyoundwa kusafisha vifaa vya umeme na elektroniki vikiwa vimewashwa bila kuhitaji kuzima umeme.",
+      benefitsLabel: "Faida kuu",
+      benefits: {
+        nonConductive: {
+          title: "Haipitishi umeme",
+          body: "Huzuia cheche za umeme, na kuruhusu usafishaji salama kwenye mifumo iliyowashwa, hadi viwango vya umeme wa juu.",
+        },
+        quickDrying: {
+          title: "Hukauka haraka, bila mabaki",
+          body: "Imetengenezwa kwa kemikali za asili zinazoyeyuka zenyewe, zikiacha ndani ya vifaa safi kabisa.",
+        },
+        nonCorrosive: {
+          title: "Haileti kutu",
+          body: "Huzuia kutu na uharibifu kwa vipengele nyeti vya elektroniki, bodi za mzunguko (PCB) na nyuso za chuma.",
+        },
+        fireSafe: {
+          title: "Salama dhidi ya moto",
+          body: "Ina kiwango cha juu cha kuwaka, ili kupunguza hatari ya moto wakati wa matumizi.",
+        },
+      },
+    },
+
   },
 
   contact: {
@@ -111,6 +143,7 @@ const sw: Dictionary = {
     medical: "Vifaa vya afya na taarifa za afya",
     oilGas: "Ushauri wa mafuta na gesi",
     environment: "Mazingira na nishati safi",
+    cleaning: "Usafishaji wa Umeme na Mitambo",
   },
 
   home: {

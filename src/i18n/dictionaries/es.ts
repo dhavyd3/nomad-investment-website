@@ -19,6 +19,7 @@ const es: Dictionary = {
       engineering: "Ingeniería e infraestructuras",
       agriculture: "Servicios y consultoría agrícola",
       energy: "Petróleo, gas y energías verdes",
+      cleaning: "Soluciones de limpieza eléctrica y de maquinaria",
     },
     heroTitle: "Nuestros servicios",
     heroBody:
@@ -54,6 +55,37 @@ const es: Dictionary = {
     ctaTitle: "Dinos qué hay que entregar.",
     ctaBody:
       "Envíanos el encargo y la disciplina a la que pertenece. Te responderemos desde Kampala.",
+    division: {
+      label: "División especializada",
+      title: "NOMAD Electric and Machine Cleaning Solutions",
+      body:
+        "Una división de servicios especializada de Nomad Investments Limited, que ofrece servicios eléctricos profesionales y soluciones integrales de limpieza para maquinaria, equipos e instalaciones industriales.",
+      focus:
+        "La división abarca la limpieza eléctrica, de máquinas y equipos, el mantenimiento preventivo, el desengrase y la limpieza industrial general — un trabajo pensado para mejorar el rendimiento de los equipos, alargar su vida útil, reforzar la seguridad laboral y reducir las paradas de producción.",
+      detergentLabel: "Limpieza con equipos en tensión",
+      detergentBody:
+        "Utilizamos un detergente aislante y no conductor, diseñado para limpiar equipos eléctricos y electrónicos en tensión sin necesidad de cortar la corriente.",
+      benefitsLabel: "Principales ventajas",
+      benefits: {
+        nonConductive: {
+          title: "No conductor",
+          body: "Evita chispas eléctricas y permite una limpieza segura en sistemas energizados, hasta especificaciones de alta tensión.",
+        },
+        quickDrying: {
+          title: "Secado rápido y sin residuos",
+          body: "Formulado con compuestos orgánicos que se evaporan de forma natural y dejan el interior de los equipos completamente limpio.",
+        },
+        nonCorrosive: {
+          title: "No corrosivo",
+          body: "Evita la oxidación y los daños en componentes electrónicos delicados, placas de circuito impreso (PCB) y superficies metálicas.",
+        },
+        fireSafe: {
+          title: "Seguro frente al fuego",
+          body: "Un punto de ignición alto, para reducir el riesgo de incendio durante la aplicación.",
+        },
+      },
+    },
+
   },
 
   contact: {
@@ -109,6 +141,7 @@ const es: Dictionary = {
     medical: "Suministros médicos e informática sanitaria",
     oilGas: "Consultoría de petróleo y gas",
     environment: "Medio ambiente y energías verdes",
+    cleaning: "Limpieza eléctrica y de maquinaria",
   },
 
   home: {

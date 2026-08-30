@@ -8,7 +8,7 @@ import Brandmark from "@/components/Brandmark";
 const DISCIPLINE_KEYS = [
   "businessConsulting", "investorRelations", "ictConsultancy", "cybersecurity",
   "transport", "clearing", "financial", "construction", "medical", "oilGas",
-  "environment",
+  "environment", "cleaning",
 ] as const;
 
 type State = "idle" | "sending" | "done";

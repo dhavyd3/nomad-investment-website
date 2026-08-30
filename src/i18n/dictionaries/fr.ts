@@ -19,6 +19,7 @@ const fr: Dictionary = {
       engineering: "Ingénierie et infrastructures",
       agriculture: "Services et conseil agricoles",
       energy: "Pétrole, gaz et énergies vertes",
+      cleaning: "Solutions de nettoyage électrique et machines",
     },
     heroTitle: "Nos services",
     heroBody:
@@ -54,6 +55,37 @@ const fr: Dictionary = {
     ctaTitle: "Dites-nous ce qu'il faut livrer.",
     ctaBody:
       "Envoyez-nous votre cahier des charges et la discipline concernée. Nous vous répondrons depuis Kampala.",
+    division: {
+      label: "Division spécialisée",
+      title: "NOMAD Electric and Machine Cleaning Solutions",
+      body:
+        "Une division de services spécialisée de Nomad Investments Limited, qui assure des prestations électriques professionnelles et des solutions de nettoyage complètes pour les machines, les équipements et les sites industriels.",
+      focus:
+        "La division couvre le nettoyage électrique, machines et équipements, la maintenance préventive, le dégraissage et le nettoyage industriel général — un travail conçu pour améliorer les performances des équipements, prolonger leur durée de vie, renforcer la sécurité au travail et réduire les arrêts de production.",
+      detergentLabel: "Nettoyer sous tension",
+      detergentBody:
+        "Nous utilisons un détergent isolant et non conducteur, conçu pour nettoyer les équipements électriques et électroniques sous tension sans nécessiter de coupure de courant.",
+      benefitsLabel: "Principaux avantages",
+      benefits: {
+        nonConductive: {
+          title: "Non conducteur",
+          body: "Empêche les arcs électriques et permet un nettoyage en toute sécurité sur des systèmes sous tension, jusqu'aux spécifications haute tension.",
+        },
+        quickDrying: {
+          title: "Séchage rapide, sans résidu",
+          body: "Formulé à partir de composés organiques qui s'évaporent naturellement, laissant l'intérieur des équipements parfaitement propre.",
+        },
+        nonCorrosive: {
+          title: "Non corrosif",
+          body: "Empêche l'oxydation et les dommages aux composants électroniques sensibles, aux circuits imprimés (PCB) et aux surfaces métalliques.",
+        },
+        fireSafe: {
+          title: "Sécurité incendie",
+          body: "Un point d'inflammation élevé, pour limiter les risques d'incendie pendant l'application.",
+        },
+      },
+    },
+
   },
 
   contact: {
@@ -109,6 +141,7 @@ const fr: Dictionary = {
     medical: "Fournitures médicales et informatique de santé",
     oilGas: "Conseil pétrole et gaz",
     environment: "Environnement et énergies vertes",
+    cleaning: "Nettoyage électrique et machines",
   },
 
   home: {

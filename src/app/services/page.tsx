@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 export default async function ServicesPage() {
   const t = getDictionary(await getLocale());
   const EXPERTISE_KEYS = ["guidance", "delivery", "standard", "workforce"] as const;
+  const BENEFIT_KEYS = ["nonConductive", "quickDrying", "nonCorrosive", "fireSafe"] as const;
   return (
     <>
       <main>
@@ -71,6 +72,36 @@ export default async function ServicesPage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        {/* The cleaning division. Not one of the five board zones — the board's zones
+            are baked into the GLB with a camera stop each, and this reads as a
+            specialist division rather than a sixth sector line. The id is what
+            /services#cleaning in the nav dropdown lands on. */}
+        <section id="cleaning" className="wrap svc-division" data-nav-theme="dark">
+          <span className="t-mono block">{t.services.division.label}</span>
+          <RevealWords
+            as="h2"
+            className="t-h2 mt-7 max-w-[18ch]"
+            text={t.services.division.title}
+          />
+          <RevealChars className="t-lead mt-8 max-w-[54ch]" text={t.services.division.body} />
+          <p className="t-body mt-5 max-w-[58ch]">{t.services.division.focus}</p>
+
+          <div className="svc-division-note">
+            <span className="t-mono block">{t.services.division.detergentLabel}</span>
+            <p className="t-body mt-3">{t.services.division.detergentBody}</p>
+          </div>
+
+          <span className="t-mono mt-14 block">{t.services.division.benefitsLabel}</span>
+          <div className="svc-division-grid">
+            {BENEFIT_KEYS.map((k) => (
+              <div key={k} className="svc-division-item">
+                <h3>{t.services.division.benefits[k].title}</h3>
+                <p className="t-body mt-2">{t.services.division.benefits[k].body}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="wrap svc-cta" data-nav-theme="dark">

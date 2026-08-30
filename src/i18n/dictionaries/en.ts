@@ -21,6 +21,7 @@ const en = {
       engineering: "Engineering & Infrastructure",
       agriculture: "Agricultural Services & Consultancy",
       energy: "Oil, Gas & Green Energy",
+      cleaning: "Electric & Machine Cleaning Solutions",
     },
     heroTitle: "Our Services",
     heroBody:
@@ -56,6 +57,40 @@ const en = {
     ctaTitle: "Tell us what needs delivering.",
     ctaBody:
       "Send the brief and the discipline it sits in. We will come back to you from Kampala.",
+
+    /* The cleaning division sits outside the five board zones on purpose: the board's
+       geometry and camera stops are baked by scene/build_scene.py, and it reads as a
+       specialist division rather than a sixth sector line. */
+    division: {
+      label: "Specialist division",
+      title: "NOMAD Electric and Machine Cleaning Solutions",
+      body:
+        "A specialist service division of Nomad Investments Limited, providing professional electrical services and comprehensive cleaning solutions for machinery, equipment and industrial facilities.",
+      focus:
+        "The division covers electrical, machine and equipment cleaning, preventive maintenance, degreasing and general industrial cleaning — work designed to improve equipment performance, extend machine lifespan, enhance workplace safety and reduce operational downtime.",
+      detergentLabel: "Cleaning live equipment",
+      detergentBody:
+        "We use a specialist non-conductive, insulating detergent engineered to clean live electrical and electronic equipment without requiring a power shutdown.",
+      benefitsLabel: "Key benefits",
+      benefits: {
+        nonConductive: {
+          title: "Non-conductive",
+          body: "Prevents electrical sparks, allowing safe cleaning on powered-on systems, up to high-voltage specifications.",
+        },
+        quickDrying: {
+          title: "Quick-drying & residue-free",
+          body: "Formulated with organic compounds that self-evaporate naturally, leaving equipment interiors completely spotless.",
+        },
+        nonCorrosive: {
+          title: "Non-corrosive",
+          body: "Prevents oxidation and damage to delicate electronic components, printed circuit boards (PCBs) and metallic surfaces.",
+        },
+        fireSafe: {
+          title: "Fire safe",
+          body: "A high ignition point, to minimise fire hazards during application.",
+        },
+      },
+    },
   },
 
   contact: {
@@ -112,6 +147,7 @@ const en = {
     medical: "Medical Supplies & Health Informatics",
     oilGas: "Oil & Gas Consultancy",
     environment: "Environment & Green Energy",
+    cleaning: "Electric & Machine Cleaning",
   },
 
   home: {

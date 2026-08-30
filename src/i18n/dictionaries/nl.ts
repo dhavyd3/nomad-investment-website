@@ -19,6 +19,7 @@ const nl: Dictionary = {
       engineering: "Techniek en infrastructuur",
       agriculture: "Agrarische diensten en advies",
       energy: "Olie, gas en groene energie",
+      cleaning: "Elektrische en machinereinigingsoplossingen",
     },
     heroTitle: "Onze diensten",
     heroBody:
@@ -54,6 +55,37 @@ const nl: Dictionary = {
     ctaTitle: "Vertel ons wat er geleverd moet worden.",
     ctaBody:
       "Stuur ons de opdracht en de discipline waar die onder valt. Wij komen bij u terug vanuit Kampala.",
+    division: {
+      label: "Gespecialiseerde divisie",
+      title: "NOMAD Electric and Machine Cleaning Solutions",
+      body:
+        "Een gespecialiseerde servicedivisie van Nomad Investments Limited, die professionele elektrotechnische diensten en complete reinigingsoplossingen levert voor machines, apparatuur en industriële installaties.",
+      focus:
+        "De divisie verzorgt elektrische, machine- en apparatuurreiniging, preventief onderhoud, ontvetting en algemene industriële reiniging — werk dat de prestaties van apparatuur verbetert, de levensduur verlengt, de veiligheid op de werkvloer vergroot en stilstand beperkt.",
+      detergentLabel: "Reinigen onder spanning",
+      detergentBody:
+        "Wij gebruiken een gespecialiseerd niet-geleidend, isolerend reinigingsmiddel, ontwikkeld om elektrische en elektronische apparatuur onder spanning te reinigen zonder de stroom af te schakelen.",
+      benefitsLabel: "Belangrijkste voordelen",
+      benefits: {
+        nonConductive: {
+          title: "Niet-geleidend",
+          body: "Voorkomt vonken en maakt veilig reinigen mogelijk op ingeschakelde systemen, tot hoogspanningsspecificaties.",
+        },
+        quickDrying: {
+          title: "Snel drogend en residuvrij",
+          body: "Samengesteld uit organische verbindingen die vanzelf verdampen en de binnenkant van apparatuur volledig schoon achterlaten.",
+        },
+        nonCorrosive: {
+          title: "Niet-corrosief",
+          body: "Voorkomt oxidatie en schade aan kwetsbare elektronische componenten, printplaten (PCB's) en metalen oppervlakken.",
+        },
+        fireSafe: {
+          title: "Brandveilig",
+          body: "Een hoog ontvlammingspunt, om brandgevaar tijdens het aanbrengen te beperken.",
+        },
+      },
+    },
+
   },
 
   contact: {
@@ -109,6 +141,7 @@ const nl: Dictionary = {
     medical: "Medische benodigdheden en zorg-ICT",
     oilGas: "Olie- en gasadvies",
     environment: "Milieu en groene energie",
+    cleaning: "Elektrische en machinereiniging",
   },
 
   home: {

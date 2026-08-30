@@ -24,7 +24,7 @@ const REASON_KEYS = ["reach", "expertise", "client", "growth"] as const;
 const DISCIPLINE_KEYS = [
   "businessConsulting", "investorRelations", "ictConsultancy", "cybersecurity",
   "transport", "clearing", "financial", "construction", "medical", "oilGas",
-  "environment",
+  "environment", "cleaning",
 ] as const;
 
 export default async function AboutPage() {

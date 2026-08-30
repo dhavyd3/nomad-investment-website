@@ -90,10 +90,18 @@ export default function ServicesScroll() {
     const el = root.current;
     if (!el) return;
     const id = window.location.hash.slice(1);
+    if (!id) return;
     const i = ZONES.findIndex((z) => z.id === id);
-    if (i < 0) return;
 
     const jump = () => {
+      /* Not a board zone — /services#cleaning is a normal section further down the
+         page. The browser's own anchor scroll has already been beaten by the pinned
+         section mounting above it, so place it by hand rather than leave it at the top. */
+      if (i < 0) {
+        const target = document.getElementById(id);
+        if (target) window.scrollTo({ top: target.offsetTop, behavior: "instant" });
+        return;
+      }
       const scrollable = el.offsetHeight - window.innerHeight;
       if (scrollable <= 0) return;
       // stop i+1 of STOPS, since index 0 is the establishing shot
