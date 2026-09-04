@@ -65,6 +65,15 @@ export const ZONES: Zone[] = [
     at: [1720, 1060],
     box: [1555, 969, 360, 240],
   },
+  {
+    id: "cleaning",
+    index: "06",
+    title: "Electric & Machine Cleaning Solutions",
+    body:
+      "Electrical service and industrial cleaning for machinery, equipment and plant — degreasing, preventive maintenance and cleaning done on live equipment, with a non-conductive detergent, so the power never has to come down for it.",
+    at: [1120, 1290],
+    box: [955, 1200, 360, 240],
+  },
 ];
 
 /** Establishing shot — has to contain every zone box, at the same 3:2. */

@@ -1100,6 +1100,13 @@ section { position: relative; }
 .svc-crane-jib { animation: svcSlew 22s ease-in-out infinite; transform-origin: 0 0; }
 @keyframes svcSlew { 0%, 100% { transform: skewX(0deg); } 50% { transform: skewX(5deg); } }
 
+/* the wash gantry traverses its rails, matching what the rig does to anim_wash_gantry */
+.svc-gantry { animation: svcGantry 9s ease-in-out infinite; }
+@keyframes svcGantry {
+  0%, 100% { transform: translate(-16px, -9px); }
+  50% { transform: translate(16px, 9px); }
+}
+
 .svc-graze { animation: svcGraze 5.5s ease-in-out infinite; }
 @keyframes svcGraze {
   0%, 100% { transform: translate(0, 0); }
@@ -1168,7 +1175,7 @@ section { position: relative; }
 .svc-list p { max-width: 62ch; }
 
 @media (prefers-reduced-motion: reduce) {
-  .svc-blades, .svc-pump, .svc-dig, .svc-crane-jib,
+  .svc-blades, .svc-pump, .svc-dig, .svc-crane-jib, .svc-gantry,
   .svc-graze, .svc-bob, .svc-tractor, .svc-window, .svc-car { animation: none; }
   .svc-roof[data-open="true"] { transform: translateY(-130px); }
 }

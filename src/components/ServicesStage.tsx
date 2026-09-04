@@ -90,7 +90,8 @@ const ROOF = "anim_roof_ict";
 const TURBINES = ["anim_turbine_hub_00", "anim_turbine_hub_01", "anim_turbine_hub_02"];
 const PUMP = "anim_pump_beam";
 const CRANE = "anim_crane_jib";
-const ANIMATED_NODES = [ROOF, ...TURBINES, PUMP, CRANE];
+const GANTRY = "anim_wash_gantry";
+const ANIMATED_NODES = [ROOF, ...TURBINES, PUMP, CRANE, GANTRY];
 
 /** How far the warehouse roof rises, in scene metres. */
 const ROOF_LIFT = 90;
@@ -99,6 +100,10 @@ const ROOF_LIFT = 90;
 const STOP_ICT = 2;
 const STOP_ENGINEERING = 3;
 const STOP_ENERGY = 5;
+const STOP_CLEANING = 6;
+
+/** How far the wash gantry travels either side of its rest, in scene metres. */
+const GANTRY_TRAVEL = 16;
 
 /** 1 when the camera is parked on a stop, falling to 0 half a segment either side. */
 function nearStop(u: number, stopIndex: number) {
@@ -215,6 +220,7 @@ export default function ServicesStage({
     let disposed = false;
     const animated: Record<string, THREE.Object3D> = {};
     let roofRestY = 0;
+    let gantryRestX = 0;
 
     loader.load(
       "/scene/nomad-scene.glb",
@@ -236,6 +242,8 @@ export default function ServicesStage({
 
         const roof = animated[ROOF];
         if (roof) roofRestY = roof.position.y;
+        const gantry = animated[GANTRY];
+        if (gantry) gantryRestX = gantry.position.x;
 
         /* A missing pivot is otherwise invisible: the scene renders perfectly and
            simply never moves. Say so rather than let it pass. */
@@ -311,6 +319,14 @@ export default function ServicesStage({
       if (nearStop(u, STOP_ENGINEERING) > 0) {
         const jib = animated[CRANE];
         if (jib) jib.rotation.y = Math.sin(t * 0.16) * 0.5;
+      }
+
+      /* The wash gantry traverses the hall over the machine on the pad. Blender's
+         +X survives the Y-up export as three.js' +X, so this is the same axis the
+         rails were built along. */
+      if (nearStop(u, STOP_CLEANING) > 0) {
+        const gantry = animated[GANTRY];
+        if (gantry) gantry.position.x = gantryRestX + Math.sin(t * 0.5) * GANTRY_TRAVEL;
       }
 
       renderer.render(scene, camera);

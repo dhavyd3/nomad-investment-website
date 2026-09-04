@@ -251,6 +251,108 @@ function Farm() {
 }
 
 /* ---------- zone 4: oil, gas and green energy ---------- */
+/* 06 — electric & machine cleaning. The board's open portal frame, the gantry that
+   traverses it, and the switchyard behind: same two halves as the 3D zone, so the
+   fallback is the same picture drawn flat rather than a different one. */
+function Cleaning() {
+  return (
+    <g>
+      <Tile x={-18} y={-14} w={164} d={122} fill={C.ground} />
+
+      {/* wash pad */}
+      <polygon points={pts([iso(6, 10), iso(74, 10), iso(74, 62), iso(6, 62)])} fill={C.groundEdge} />
+
+      {/* the machine on the pad, banded */}
+      <Box x={20} y={26} w={40} d={18} h={14} z={2} top={C.navyLit} left={C.navyDim} right={C.navy} />
+      <polygon points={pts([iso(20, 26, 16), iso(60, 26, 16), iso(60, 44, 16), iso(20, 44, 16)])} fill={C.gold} opacity={0.55} />
+
+      {/* portal frames: legs and a header each */}
+      {[10, 68].map((x) => (
+        <g key={x}>
+          <Box x={x} y={12} w={4} d={4} h={34} top={C.steelLit} left={C.steelDim} right={C.steel} />
+          <Box x={x} y={56} w={4} d={4} h={34} top={C.steelLit} left={C.steelDim} right={C.steel} />
+          <polygon points={pts([iso(x, 12, 34), iso(x + 4, 12, 34), iso(x + 4, 60, 34), iso(x, 60, 34)])} fill={C.steel} />
+        </g>
+      ))}
+      {/* rails the gantry runs on */}
+      {[12, 56].map((y) => (
+        <polygon key={y} points={pts([iso(10, y, 29), iso(72, y, 29), iso(72, y + 2.4, 29), iso(10, y + 2.4, 29)])} fill={C.gold} opacity={0.75} />
+      ))}
+
+      {/* the gantry traverses the hall — the one moving part of the zone */}
+      <g className="svc-gantry">
+        <polygon points={pts([iso(36, 12, 30), iso(40, 12, 30), iso(40, 60, 30), iso(36, 60, 30)])} fill={C.gold} />
+        {[18, 30, 42, 52].map((y) => (
+          <g key={y}>
+            <line {...lineProps(iso(38, y, 29), iso(38, y, 19))} stroke={C.steelLit} strokeWidth={1.1} />
+            <circle {...(() => { const [a, b] = iso(38, y, 18); return { cx: a, cy: b }; })()} r={1.7} fill={C.gold} />
+          </g>
+        ))}
+      </g>
+
+      {/* switchyard: two transformers, bushings on the lid */}
+      {[[96, 16], [96, 52]].map(([x, y], i) => (
+        <g key={i}>
+          <Box x={x} y={y} w={28} d={20} h={18} top={C.navyLit} left={C.navyDim} right={C.navy} />
+          {[4, 12, 20].map((ox) => (
+            <g key={ox}>
+              <line {...lineProps(iso(x + ox, y + 6, 18), iso(x + ox, y + 6, 28))} stroke={C.pale} strokeWidth={2.6} />
+              <circle {...(() => { const [a, b] = iso(x + ox, y + 6, 29); return { cx: a, cy: b }; })()} r={1.8} fill={C.gold} />
+            </g>
+          ))}
+          {/* radiator bank down the flank */}
+          {[0, 1, 2, 3, 4].map((f) => (
+            <polygon key={f} points={pts([iso(x - 3, y + 2 + f * 3.6, 3), iso(x, y + 2 + f * 3.6, 3), iso(x, y + 3.4 + f * 3.6, 3), iso(x - 3, y + 3.4 + f * 3.6, 3)])} fill={C.steel} />
+          ))}
+        </g>
+      ))}
+
+      {/* busbar portal, the tallest thing in the zone */}
+      <g>
+        <Box x={92} y={-6} w={4} d={4} h={46} top={C.steelLit} left={C.steelDim} right={C.steel} />
+        <Box x={128} y={-6} w={4} d={4} h={46} top={C.steelLit} left={C.steelDim} right={C.steel} />
+        <polygon points={pts([iso(92, -6, 46), iso(132, -6, 46), iso(132, -2.6, 46), iso(92, -2.6, 46)])} fill={C.steelLit} />
+        {[100, 112, 124].map((x) => (
+          <g key={x}>
+            <line {...lineProps(iso(x, -4, 46), iso(x, -4, 36))} stroke={C.pale} strokeWidth={2.2} />
+            <rect {...(() => { const [a, b] = iso(x, -4, 35); return { x: a - 1.6, y: b - 1.6 }; })()} width={3.2} height={3.2} fill={C.gold} />
+          </g>
+        ))}
+      </g>
+
+      {/* detergent drums, banded like the tanks */}
+      {[0, 1, 2].map((c) =>
+        [0, 1].map((r) => {
+          const [sx, sy] = iso(14 + c * 13, 82 + r * 11);
+          return (
+            <g key={`${c}-${r}`} transform={`translate(${sx.toFixed(1)},${sy.toFixed(1)})`}>
+              <ellipse cx={0} cy={-11} rx={5.4} ry={3} fill={C.steelLit} />
+              <path d="M -5.4 -11 L -5.4 -3 A 5.4 3 0 0 0 5.4 -3 L 5.4 -11 Z" fill={C.navy} />
+              <ellipse cx={0} cy={-7} rx={5.4} ry={3} fill="none" stroke={C.gold} strokeWidth={0.9} opacity={0.7} />
+            </g>
+          );
+        })
+      )}
+
+      {/* degreasing tank */}
+      {(() => {
+        const [sx, sy] = iso(74, 92);
+        return (
+          <g transform={`translate(${sx.toFixed(1)},${sy.toFixed(1)})`}>
+            <ellipse cx={0} cy={-16} rx={15} ry={8.4} fill={C.steelLit} />
+            <path d="M -15 -16 L -15 -5 A 15 8.4 0 0 0 15 -5 L 15 -16 Z" fill={C.steel} />
+            <ellipse cx={0} cy={-16} rx={15} ry={8.4} fill="none" stroke={C.gold} strokeWidth={1} opacity={0.6} />
+          </g>
+        );
+      })()}
+
+      {/* control cabin */}
+      <Box x={112} y={86} w={24} d={15} h={10} top={C.pale} left={C.steelDim} right={C.steel} />
+    </g>
+  );
+}
+
+
 function Energy() {
   return (
     <g>
@@ -361,6 +463,7 @@ export default function ServicesScene({ active }: { active: number }) {
           {i === 2 && <Construction />}
           {i === 3 && <Farm />}
           {i === 4 && <Energy />}
+          {i === 5 && <Cleaning />}
         </g>
       ))}
     </svg>

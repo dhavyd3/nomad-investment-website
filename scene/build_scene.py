@@ -69,6 +69,9 @@ ZONES = {
     "engineering": ( 150.0,  120.0),
     "agriculture": ( 200.0, -110.0),
     "energy":      (-130.0, -140.0),
+    # Closes the horseshoe on the west leg, between energy and business. Sited so
+    # its apron clears both by ~55m — the same breathing room the others have.
+    "cleaning":    (-300.0,  -60.0),
 }
 
 # --------------------------------------------------------------------------
@@ -590,6 +593,142 @@ def build_energy():
     return root
 
 
+# ==========================================================================
+# 06 — electric & machine cleaning: a switchyard and an open wash hall
+# ==========================================================================
+def build_cleaning():
+    """The cleaning division's yard, in its two halves: an energised switchyard,
+    and an open hall where machines are cleaned without dropping the power.
+
+    The hall is a portal frame with rails and no roof deck. A roof is what a real
+    wash hall has, and it is also what hides the machine and the gantry — the two
+    things this zone exists to show. Open, the frame still reads as a building and
+    the operation underneath stays visible from every stop on the path.
+
+    Massing is deliberately coarse and tall. At the stop distance the board reads
+    in silhouette, so anything under about eight metres is texture, not form.
+    """
+    cx, cy = ZONES["cleaning"]
+    root = empty("zone.cleaning", (cx, cy, 0))
+    apron("apron.cleaning", cx, cy, 116, 98)
+
+    # ---- wash hall, west half -------------------------------------------
+    HX, HY = cx - 20.0, cy + 4.0
+    PW, PD, PH = 54.0, 38.0, 22.0
+    add("cube", "road", "cl.pad", (HX, HY, 0.35), (PW, PD, 0.5), parent=root,
+        frameable=False)
+
+    # two portal frames — legs and a header each — with rails running between them
+    for f, ox in enumerate((-PW / 2 + 5.0, PW / 2 - 5.0)):
+        for sy in (-1, 1):
+            box("steel_lit", f"cl.hall.leg.{f}.{'p' if sy > 0 else 'n'}",
+                HX + ox, HY + sy * (PD / 2 - 3.0), 2.6, 2.6, PH, z=0.5, parent=root)
+        box("steel", f"cl.hall.header.{f}", HX + ox, HY, 2.2, PD - 6.0 + 2.6, 2.2,
+            z=0.5 + PH, parent=root)
+    for sy in (-1, 1):
+        box("gold", f"cl.hall.rail.{'p' if sy > 0 else 'n'}",
+            HX, HY + sy * (PD / 2 - 3.0), PW - 10.0 + 2.6, 1.4, 1.4,
+            z=0.5 + PH - 3.4, parent=root)
+
+    # the machine under it: a skid-mounted unit big enough to be the subject
+    box("navy_lit", "cl.machine.body", HX - 1.0, HY, 25.0, 11.0, 9.0, z=1.1,
+        parent=root)
+    box("gold", "cl.machine.band", HX - 1.0, HY, 25.3, 11.3, 1.0, z=6.6, parent=root)
+    box("ink", "cl.machine.skid", HX - 1.0, HY, 27.0, 12.6, 1.1, z=0.5, parent=root)
+    # a horizontal drum across the top, so it is plant rather than a crate
+    add("cyl", "steel", "cl.machine.drum", (HX + 5.0, HY, 12.4), (7.4, 7.4, 13.0),
+        rot=(0, math.radians(90), 0), parent=root)
+    add("cyl", "gold", "cl.machine.drum.band", (HX + 10.6, HY, 12.4),
+        (7.6, 7.6, 0.9), rot=(0, math.radians(90), 0), parent=root)
+
+    # ---- the gantry the rig traverses ------------------------------------
+    # Pivot at the hall centre; the rig slides it along X between the frames.
+    gantry = empty("anim_wash_gantry", (HX, HY, 0), parent=root)
+    GZ = 0.5 + PH - 4.0
+    box("gold", "cl.gantry.bridge", HX, HY, 2.4, PD - 4.0, 1.8, z=GZ, parent=gantry)
+    for sy in (-1, 1):
+        box("steel", f"cl.gantry.carriage.{'p' if sy > 0 else 'n'}",
+            HX, HY + sy * (PD / 2 - 3.0), 4.0, 3.2, 2.6, z=GZ - 0.6, parent=gantry)
+    # booms down onto the machine, nozzles lit so the jets read as spray
+    for k, oy in enumerate((-10.5, -3.5, 3.5, 10.5)):
+        box("steel_lit", f"cl.gantry.boom.{k}", HX, HY + oy, 0.7, 0.7, 6.4,
+            z=GZ - 6.4, parent=gantry)
+        add("cone", "gold_glow", f"cl.gantry.nozzle.{k}", (HX, HY + oy, GZ - 7.0),
+            (1.8, 1.8, 2.0), rot=(math.radians(180), 0, 0), parent=gantry)
+
+    # ---- switchyard, east half ------------------------------------------
+    # Transformers to their real anatomy: tank, a radiator bank down one flank,
+    # bushings rising off the lid, conservator drum across the top.
+    for i, (tx, ty) in enumerate(((28.0, 17.0), (28.0, -13.0))):
+        px, py = cx + tx, cy + ty
+        box("navy", f"cl.tx.tank.{i}", px, py, 20, 14, 13, z=0.4, parent=root)
+        for f in range(7):
+            box("steel", f"cl.tx.fin.{i}.{f}", px - 11.0, py - 5.4 + f * 1.8,
+                2.8, 0.7, 9.4, z=2.0, parent=root)
+        for b, bx in enumerate((-6.2, 0.0, 6.2)):
+            for k in range(3):
+                r = 3.0 - k * 0.5
+                add("cyl", "pale", f"cl.tx.bush.{i}.{b}.{k}",
+                    (px + bx, py + 3.0, 14.4 + k * 2.1), (r, r, 2.0), parent=root)
+            add("cyl", "gold", f"cl.tx.cap.{i}.{b}",
+                (px + bx, py + 3.0, 20.4), (1.9, 1.9, 1.3), parent=root)
+        add("cyl", "steel_lit", f"cl.tx.cons.{i}", (px, py - 6.4, 16.0),
+            (4.2, 4.2, 15.0), rot=(0, math.radians(90), 0), parent=root)
+
+    # busbar portal behind the transformers — the zone's tallest silhouette
+    GX, GY, GH = cx + 28.0, cy + 36.0, 31.0
+    for s_ in (-1, 1):
+        lx = GX + s_ * 17.0
+        box("steel", f"cl.bus.leg.{'p' if s_ > 0 else 'n'}", lx, GY, 2.6, 2.6, GH,
+            parent=root)
+        for k in range(4):
+            add("cube", "steel", f"cl.bus.brace.{'p' if s_ > 0 else 'n'}.{k}",
+                (lx, GY, 5.0 + k * 7.0), (3.6, 0.7, 0.7), parent=root)
+    box("steel_lit", "cl.bus.beam", GX, GY, 37.0, 2.0, 2.0, z=GH, parent=root)
+    for k, ox in enumerate((-11.0, 0.0, 11.0)):
+        for d in range(4):
+            add("cyl", "pale", f"cl.bus.ins.{k}.{d}", (GX + ox, GY, GH - 2.2 - d * 1.9),
+                (2.2, 2.2, 1.6), parent=root)
+        add("cube", "gold", f"cl.bus.term.{k}", (GX + ox, GY, GH - 10.4),
+            (1.6, 1.6, 1.8), parent=root)
+
+    # ---- yard --------------------------------------------------------------
+    # The non-conductive detergent is the division's actual product claim, so it
+    # gets a store rather than being implied. Drums sized to read, not to count.
+    SX, SY = cx - 40.0, cy - 33.0
+    box("chalk", "cl.store.pallet", SX, SY, 30.0, 15.0, 0.8, z=0.3, parent=root)
+    for r_ in range(2):
+        for c_ in range(3):
+            dx, dy = SX - 9.0 + c_ * 9.0, SY - 3.6 + r_ * 7.2
+            add("cyl", "navy", f"cl.drum.{r_}{c_}", (dx, dy, 4.0), (5.4, 5.4, 7.0),
+                parent=root)
+            add("cyl", "gold", f"cl.drum.band.{r_}{c_}", (dx, dy, 6.2),
+                (5.6, 5.6, 0.8), parent=root)
+
+    # Degreasing tank. Sited south of the hall rather than north of it: from the
+    # stop's azimuth anything north-west of the frame projects straight over the
+    # portal and reads as a disc floating through the roofline.
+    add("cyl", "steel_lit", "cl.degrease", (cx - 44.0, cy - 14.0, 5.5),
+        (16.0, 16.0, 11.0), parent=root)
+    add("cyl", "gold", "cl.degrease.rim", (cx - 44.0, cy - 14.0, 11.3),
+        (16.8, 16.8, 0.9), parent=root)
+
+    # control cabin, with the lit window band the other zones use for occupancy
+    box("chalk", "cl.cabin", cx + 42, cy - 32, 17, 11, 7.0, z=0.3, parent=root)
+    for k in range(3):
+        box("gold_glow", f"cl.cabin.win.{k}", cx + 36.6 + k * 5.4, cy - 37.6,
+            3.6, 0.5, 2.0, z=3.0, parent=root)
+
+    # service vehicles, the note the city zone uses to give a yard its scale
+    for k, (vx, vy) in enumerate(((6.0, -36.0), (-8.0, -36.0))):
+        box("pale", f"cl.van.body.{k}", cx + vx, cy + vy, 12.0, 5.0, 4.2, z=0.5,
+            parent=root)
+        box("gold", f"cl.van.cab.{k}", cx + vx + 7.6, cy + vy, 4.2, 4.8, 3.6, z=0.5,
+            parent=root)
+
+    return root
+
+
 def road(name, a, b, width=16.0):
     """A link between two zones. Without these the zones read as five islands on a
     void — the same criticism the flat board earned. Roads make it one operation
@@ -601,7 +740,8 @@ def road(name, a, b, width=16.0):
         frameable=False)
 
 
-ROUTE = ["business", "ict", "engineering", "agriculture", "energy", "business"]
+ROUTE = ["business", "ict", "engineering", "agriculture", "energy", "cleaning",
+         "business"]
 for _i in range(len(ROUTE) - 1):
     road(f"road.{_i}", ZONES[ROUTE[_i]], ZONES[ROUTE[_i + 1]])
 
@@ -611,6 +751,7 @@ for _key, _fn in (
     ("engineering", build_construction),
     ("agriculture", build_farm),
     ("energy", build_energy),
+    ("cleaning", build_cleaning),
 ):
     _current_zone = _key
     _fn()
@@ -836,6 +977,9 @@ STOPS = [
     frame("engineering", _zone_objects["engineering"], azimuth=-46, elevation=26, fov=39),
     frame("agriculture", _zone_objects["agriculture"], azimuth=-14, elevation=28, fov=40),
     frame("energy", _zone_objects["energy"], azimuth=-138, elevation=25, fov=39),
+    # Looked at from the south-east, so the wash hall is nearest camera and the
+    # switchyard stacks up behind it rather than the other way round.
+    frame("cleaning", _zone_objects["cleaning"], azimuth=-28, elevation=27, fov=40),
 ]
 
 with open(os.path.join(OUT_SRC, "camera-stops.json"), "w", encoding="utf-8") as f:

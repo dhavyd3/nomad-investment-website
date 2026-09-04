@@ -74,11 +74,11 @@ export default async function ServicesPage() {
           </ol>
         </section>
 
-        {/* The cleaning division. Not one of the five board zones — the board's zones
-            are baked into the GLB with a camera stop each, and this reads as a
-            specialist division rather than a sixth sector line. The id is what
-            /services#cleaning in the nav dropdown lands on. */}
-        <section id="cleaning" className="wrap svc-division" data-nav-theme="dark">
+        {/* The cleaning division in full. Zone 06 on the board covers the line; this is the
+            deep dive below the board: the sector line itself is now zone 06, which
+            /services#cleaning flies the camera to, and this carries the detergent
+            and benefits copy that would never fit a zone card. */}
+        <section id="cleaning-division" className="wrap svc-division" data-nav-theme="dark">
           <span className="t-mono block">{t.services.division.label}</span>
           <RevealWords
             as="h2"
