@@ -4,10 +4,14 @@ Builds the Nomad services diorama and exports it for the web.
 Run headless:
   blender --background --factory-startup --python scene/build_scene.py
 
-Outputs, all into site/public/scene:
-  nomad-scene.glb     the model, Draco-compressed
-  camera-stops.json   camera keyframes, read by the three.js rig
-  preview-*.png       one still per stop, so the framing can be checked
+Outputs:
+  public/scene/nomad-scene.glb   the model, Draco-compressed
+  src/scene/camera-stops.json    camera keyframes, imported by the three.js rig
+  scene/previews/preview-*.png   one still per stop, so the framing can be checked
+
+The stops go to src/, not public/: the rig imports them, so they are bundled and
+type-checked rather than fetched. A copy under public/ used to be shipped too and
+went stale the moment a stop was added — it is gone, not regenerated.
 
 The camera stops live here rather than in the TypeScript because the framing only
 means anything relative to the geometry, and the geometry is defined here. The rig
